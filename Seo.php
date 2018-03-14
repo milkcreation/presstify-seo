@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: SEO
-Plugin URI: http://presstify.com/plugins/seo
+Plugin URI: https://presstify.com/plugins/seo
 Description: Gestionnaire de référencement de site
 Version: 1.0.0
 Author: Milkcreation
