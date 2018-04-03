@@ -1,9 +1,16 @@
 {
   "name": "presstify-plugins/seo",
-  "description": "PresstiFy Plugin Seo",
-  "type": "presstify-plugins",
-  "keywords": ["presstify", "plugins", "wordpress", "seo"],
+  "description": "Plugin PresstiFy de gestion des données de référencement",
+  "type": "presstify-plugin",
+  "keywords": [
+    "presstify",
+    "plugins",
+    "wordpress",
+    "seo",
+    "google"
+  ],
   "homepage": "http://svn.milkcreation.fr/presstify-plugins/seo",
+  "time": "2018-03-29",
   "license": "proprietary",
   "authors": [
     {
@@ -12,10 +19,15 @@
       "role": "Developper"
     }
   ],
-  "config" : {
-    "preferred-install": "dist",
-    "sort-packages": true,
-    "optimize-autoloader": true
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://composer.tigreblanc.fr/presstify/"
+    }
+  ],
+  "require": {
+    "composer/installers": "~1.0",
+    "presstify/framework": "^1.4"
   },
   "autoload": {
     "psr-4": {
@@ -23,5 +35,10 @@
     }
   },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
 }

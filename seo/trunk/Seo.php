@@ -3,7 +3,7 @@
 Plugin Name: SEO
 Plugin URI: https://presstify.com/plugins/seo
 Description: Gestionnaire de référencement de site
-Version: 1.0.0
+Version: 1.0.1
 Author: Milkcreation
 Author URI: http://milkcreation.fr
 */
