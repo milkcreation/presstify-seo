@@ -27,7 +27,8 @@
   ],
   "require": {
     "composer/installers": "~1.0",
-    "presstify/framework": ">=1.4"
+    "presstify/framework": ">=1.4",
+    "spatie/laravel-sitemap": "^5.2"
   },
   "autoload": {
     "files": [
