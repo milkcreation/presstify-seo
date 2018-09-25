@@ -1,6 +1,6 @@
 {
   "name": "presstify-plugins/seo",
-  "description": "Plugin PresstiFy de gestion des données de référencement.",
+  "description": "Gestion des données de référencement.",
   "type": "presstify-plugin",
   "keywords": [
     "presstify",
@@ -10,7 +10,7 @@
     "google"
   ],
   "homepage": "https://svn.milkcreation.fr/presstify-plugins/seo",
-  "time": "2018-09-23",
+  "time": "2018-09-24",
   "license": "proprietary",
   "authors": [
     {
