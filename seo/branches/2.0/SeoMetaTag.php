@@ -30,8 +30,18 @@ class SeoMetaTag extends AbstractParametersBag
                 /** @var Metabox $metabox */
                 $metabox = resolve(Metabox::class);
 
-                $post_types = $this->get('meta_tag.post_type', get_post_types());
-                $post_types = array_diff($post_types, ['attachment', 'revision', 'nav_menu_item']);
+                $post_types = $this->get('meta_tag.post_type', array_keys(get_post_types()));
+                $post_types = array_diff(
+                    $post_types, [
+                        'attachment',
+                        'custom_css',
+                        'customize_changeset',
+                        'nav_menu_item',
+                        'oembed_cache',
+                        'revision',
+                        'user_request'
+                    ]
+                );
 
                 foreach ($post_types as $post_type) :
                     /** @var WP_Post_Type $wp_post_type */
