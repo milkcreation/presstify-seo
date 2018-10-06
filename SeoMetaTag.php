@@ -30,7 +30,10 @@ class SeoMetaTag extends AbstractParametersBag
                 /** @var Metabox $metabox */
                 $metabox = resolve(Metabox::class);
 
-                $post_types = $this->get('meta_tag.post_type', array_keys(get_post_types()));
+                $post_types = $this->has('post_type')
+                    ? $this->get('post_type', [])
+                    : array_keys(get_post_types());
+            
                 $post_types = array_diff(
                     $post_types, [
                         'attachment',
@@ -64,15 +67,5 @@ class SeoMetaTag extends AbstractParametersBag
             },
             999999
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function defaults($attrs = [])
-    {
-        return [
-            'ua_code' => get_option('seo_ua_code', '')
-        ];
     }
 }

@@ -9,6 +9,7 @@ use tiFy\Plugins\Seo\SeoGoogleAnalytics;
 use tiFy\Plugins\Seo\SeoMetaTag;
 use tiFy\Plugins\Seo\SeoOpenGraph;
 use tiFy\Plugins\Seo\SeoTitle;
+use tiFy\Plugins\Seo\Wp\SeoWpTitle;
 
 class SeoServiceProvider extends AppServiceProvider
 {
@@ -21,7 +22,8 @@ class SeoServiceProvider extends AppServiceProvider
         SeoGoogleAnalytics::class,
         SeoMetaTag::class,
         SeoOpenGraph::class,
-        SeoTitle::class
+        SeoTitle::class,
+        SeoWpTitle::class
     ];
 
     /**
@@ -35,5 +37,6 @@ class SeoServiceProvider extends AppServiceProvider
         $this->app->resolve(SeoMetaTag::class);
         $this->app->resolve(SeoOpenGraph::class);
         $this->app->resolve(SeoTitle::class);
+        $this->app->resolve(SeoWpTitle::class);
     }
 }
