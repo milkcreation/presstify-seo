@@ -2,12 +2,72 @@
 
 namespace tiFy\Plugins\Seo\Wp;
 
+use \WP_Query;
+
 class SeoWpTitle
 {
-    public function get()
-    {
-        $title = '';
+    /**
+     * Séparateur des éléments du titre.
+     * @var string
+     */
+    protected $sep = '';
 
+    /**
+     * Instance du controleur de requête globale de Wordpress.
+     * @var WP_Query
+     */
+    protected $wpQuery;
+
+    /**
+     * CONSTRUCTEUR.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        add_filter(
+            'pre_get_document_title',
+            function ($title = '') {
+                /** @var WP_Query $wp_query */
+                global $wp_query;
+                $this->wpQuery = $wp_query;
+
+                $this->sep = apply_filters('document_title_separator', '-');
+
+                return $this->get($title);
+            }
+        );
+    }
+
+    /**
+     * Récupération du suffixe de titre.
+     *
+     * @param string $title Intitulé courant.
+     *
+     * @return string
+     */
+    public function append($title = '')
+    {
+        if ($title) :
+            $title .= sprintf(
+                ' %s %s',
+                $this->sep,
+                get_bloginfo('name')
+            );
+        endif;
+
+        return $title;
+    }
+
+    /**
+     * Récupération de la valeur par défaut de l'intitulé de la balise titre du site.
+     *
+     * @param string $title Intitulé courant.
+     *
+     * @return string|void
+     */
+    public function defaults($title = '')
+    {
         if (!is_feed()) :
             /**
              * Page 404.
@@ -50,11 +110,10 @@ class SeoWpTitle
 
                 else :
                     if (is_paged()) :
-                        global $wp_query;
                         $title = sprintf(
                             __('Actualités page %1$s sur %2$s', 'tify'),
                             (get_query_var('paged') ? get_query_var('paged') : 1),
-                            $wp_query->max_num_pages
+                            $this->wpQuery->max_num_pages
                         );
                     else :
                         $title = __('Actualités', 'tify');
@@ -71,15 +130,17 @@ class SeoWpTitle
                             get_the_title($page_for_posts)
                         )
                     );
-                elseif (is_paged()) :
-                    global $wp_query;
-                    $title = sprintf(
-                        __('Actualités page %1$s sur %2$s', 'tify'),
-                        (get_query_var('paged') ? get_query_var('paged') : 1),
-                        $wp_query->max_num_pages
-                    );
                 else :
                     $title = __('Actualités', 'tify');
+                endif;
+
+                if (is_paged()) :
+                    $title .= sprintf(
+                        __(' %1$s page %2$s sur %3$s', 'tify'),
+                        $this->sep,
+                        (get_query_var('paged') ? get_query_var('paged') : 1),
+                        $this->wpQuery->max_num_pages
+                    );
                 endif;
 
             /**
@@ -176,28 +237,17 @@ class SeoWpTitle
         return $title;
     }
 
-    /** == == **/
-    final public function tify_seo_title_for_singular($title)
+    /**
+     * Récupération de l'intitulé de la balise titre du site.
+     *
+     * @param string $title Intitulé courant.
+     *
+     * @return string|void
+     */
+    public function get($title = '')
     {
-        global $post;
+        $title = $this->defaults($title);
 
-        if (($seo_meta = get_post_meta($post->ID, '_tify_seo_meta', true)) && !empty($seo_meta['title'])) {
-            return $seo_meta['title'];
-        }
-
-        return $title;
-    }
-
-    /** == == **/
-    final public function tify_seo_title_for_archive($title)
-    {
-        global $post;
-
-        if (is_home() && ($page_for_posts = get_option('page_for_posts')) && ($seo_meta = get_post_meta($page_for_posts,
-                '_tify_seo_meta', true)) && !empty($seo_meta['title'])) {
-            return $seo_meta['title'];
-        }
-
-        return $title;
+        return $this->append($title);
     }
 }
