@@ -31,12 +31,12 @@ class SeoServiceProvider extends AppServiceProvider
      */
     public function boot()
     {
-        $this->app->resolve(Seo::class);
-        $this->app->resolve(SeoDescription::class);
-        $this->app->resolve(SeoGoogleAnalytics::class);
-        $this->app->resolve(SeoMetaTag::class);
-        $this->app->resolve(SeoOpenGraph::class);
-        $this->app->resolve(SeoTitle::class);
-        $this->app->resolve(SeoWpTitle::class);
+        $this->app->singleton('seo', function() {return new Seo();})->build();
+        $this->app->singleton('seo.description', function() {return new SeoDescription();})->build();
+        $this->app->singleton('seo.google.analytics', function() {return new SeoGoogleAnalytics();})->build();
+        $this->app->singleton('seo.meta.tag', function() {return new SeoMetaTag();})->build();
+        $this->app->singleton('seo.open.graph', function() {return new SeoOpenGraph();})->build();
+        $this->app->singleton('seo.title', function() {return new SeoTitle();})->build();
+        $this->app->singleton('seo.wp.title', function() {return new SeoWpTitle();})->build();
     }
 }
