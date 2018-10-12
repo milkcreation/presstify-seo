@@ -5,6 +5,7 @@ namespace tiFy\Plugins\Seo;
 use tiFy\Contracts\Views\ViewInterface;
 use tiFy\Contracts\Views\ViewsInterface;
 use tiFy\Plugins\Seo\Seo;
+use tiFy\Plugins\Seo\SeoTitle;
 
 trait SeoResolverTrait
 {
@@ -27,6 +28,16 @@ trait SeoResolverTrait
         $path = '/Resources/assets/' . ltrim($path, '/');
 
         return file_exists($cinfo->getDirname() . $path) ? class_info($this)->getUrl() . $path : '';
+    }
+
+    /**
+     * Récupération de l'instance de traitement du titre de la page.
+     *
+     * @return SeoTitle
+     */
+    public function title()
+    {
+        return app('seo.title');
     }
 
     /**
