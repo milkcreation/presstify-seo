@@ -228,7 +228,7 @@ class SeoWpTitle
             /**
              * @todo
              */
-            elseif (is_comments_popup()) :
+            //elseif (is_comments_popup()) :
             elseif (is_paged()) :
             else :
             endif;
