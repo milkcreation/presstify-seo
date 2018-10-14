@@ -1,13 +1,13 @@
 <?php
 
-namespace tiFy\Plugins\Seo;
+namespace tiFy\Plugins\Seo\GoogleAnalytics;
 
 use tiFy\Kernel\Parameters\AbstractParametersBag;
 use tiFy\Metabox\Metabox;
 use tiFy\Plugins\Seo\Metabox\OptionsGoogleAnalytics\OptionsGoogleAnalytics;
 use tiFy\Plugins\Seo\SeoResolverTrait;
 
-class SeoGoogleAnalytics extends AbstractParametersBag
+class GoogleAnalytics extends AbstractParametersBag
 {
     use SeoResolverTrait;
 

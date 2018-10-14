@@ -2,7 +2,7 @@
 
 namespace tiFy\Plugins\Seo\Wp;
 
-abstract class AbstractSeoWpMetaTag
+abstract class AbstractMetatag
 {
     /**
      * {@inheritdoc}
@@ -84,7 +84,7 @@ abstract class AbstractSeoWpMetaTag
      */
     public function get()
     {
-        return $this->defaults($title);
+        return $this->defaults();
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace tiFy\Plugins\Seo\Contracts;
 
-interface SeoWpMetaTagInterface
+interface WpMetatag
 {
     /**
      * Récupération de la valeur par défaut de l'élément.

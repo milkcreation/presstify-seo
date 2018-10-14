@@ -2,7 +2,7 @@
 
 namespace tiFy\Plugins\Seo\Wp;
 
-class SeoWpOpenGraph
+class MetatagsOpengraph
 {
     final public function wp_head_opengraph($output)
     {

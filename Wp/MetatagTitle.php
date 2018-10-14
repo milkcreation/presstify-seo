@@ -2,9 +2,9 @@
 
 namespace tiFy\Plugins\Seo\Wp;
 
-use tiFy\Plugins\Seo\Contracts\SeoWpMetaTagInterface;
+use tiFy\Plugins\Seo\Contracts\WpMetatag;
 
-class SeoWpTitle extends AbstractSeoWpMetaTag implements SeoWpMetaTagInterface
+class MetatagTitle extends AbstractMetatag implements WpMetatag
 {
     /**
      * Séparateur des éléments du titre.
@@ -19,14 +19,7 @@ class SeoWpTitle extends AbstractSeoWpMetaTag implements SeoWpMetaTagInterface
      */
     public function __construct()
     {
-        /*add_filter(
-            'pre_get_document_title',
-            function ($title = '') {
-                $this->sep = apply_filters('document_title_separator', '-');
-
-                return $this->get($title);
-            }
-        );*/
+        $this->sep = apply_filters('document_title_separator', '-');
     }
 
     /**
@@ -37,7 +30,7 @@ class SeoWpTitle extends AbstractSeoWpMetaTag implements SeoWpMetaTagInterface
     public function append()
     {
         return get_bloginfo('name') .
-            ($desc = get_bloginfo('description') ? " {$this->sep} {$this->desc}" : '');
+            (($desc = get_bloginfo('description')) ? " {$this->sep} {$desc}" : '');
     }
 
     /**
@@ -45,7 +38,7 @@ class SeoWpTitle extends AbstractSeoWpMetaTag implements SeoWpMetaTagInterface
      */
     public function get()
     {
-        return $this->defaults() . $this->append();
+        return $this->defaults() . (($append = $this->append()) ? " {$this->sep} {$append}": '');
     }
 
     /**
