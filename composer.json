@@ -1,6 +1,6 @@
 {
   "name": "presstify-plugins/seo",
-  "description": "Plugin PresstiFy de gestion des données de référencement",
+  "description": "Gestion des données de référencement.",
   "type": "presstify-plugin",
   "keywords": [
     "presstify",
@@ -9,8 +9,8 @@
     "seo",
     "google"
   ],
-  "homepage": "http://svn.milkcreation.fr/presstify-plugins/seo",
-  "time": "2018-03-29",
+  "homepage": "https://svn.milkcreation.fr/presstify-plugins/seo",
+  "time": "2018-10-14",
   "license": "proprietary",
   "authors": [
     {
@@ -27,18 +27,23 @@
   ],
   "require": {
     "composer/installers": "~1.0",
-    "presstify/framework": "^1.4"
+    "presstify/framework": ">=1.4",
+    "spatie/laravel-sitemap": "^5.2"
   },
   "autoload": {
+    "files": [
+      "helpers.php"
+    ],
     "psr-4": {
       "tiFy\\Plugins\\Seo\\": ""
     }
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
-  "config": {
+  "config" : {
+    "optimize-autoloader": true,
     "preferred-install": "dist",
-    "sort-packages": true,
-    "optimize-autoloader": true
+    "secure-http": false,
+    "sort-packages": true
   }
 }
