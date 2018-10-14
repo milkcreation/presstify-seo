@@ -8,15 +8,15 @@
     <tbody>
     <tr>
         <th scope="row">
-            <label><?php _e('Activer l\'OpenGraph', 'tify'); ?></label>
+            <label><?php _e('Activer l\'Opengraph', 'tify'); ?></label>
         </th>
         <td>
             <?php
             echo field(
                 'toggle-switch',
                 [
-                    'name'  => 'seo_open_graph[active]',
-                    'value' => $this->get('open_graph.active')
+                    'name'  => 'seo_opengraph[active]',
+                    'value' => $this->get('opengraph.active')
                 ]
             );
             ?>
@@ -41,8 +41,8 @@
             echo field(
                 'media-image',
                 [
-                    'name'   => 'seo_open_graph[image]',
-                    'value'  => $this->get('open_graph.image'),
+                    'name'   => 'seo_opengraph[image]',
+                    'value'  => $this->get('opengraph.image'),
                     'width'  => 300,
                     'height' => 300
                 ]

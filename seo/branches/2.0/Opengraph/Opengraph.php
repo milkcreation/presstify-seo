@@ -1,12 +1,12 @@
 <?php
 
-namespace tiFy\Plugins\Seo;
+namespace tiFy\Plugins\Seo\Opengraph;
 
 use tiFy\Kernel\Parameters\AbstractParametersBag;
 use tiFy\Metabox\Metabox;
-use tiFy\Plugins\Seo\Metabox\OptionsOpenGraph\OptionsOpenGraph;
+use tiFy\Plugins\Seo\Metabox\OptionsOpengraph\OptionsOpengraph;
 
-class SeoOpenGraph extends AbstractParametersBag
+class Opengraph extends AbstractParametersBag
 {
     /**
      * CONSTRUCTEUR.
@@ -16,7 +16,7 @@ class SeoOpenGraph extends AbstractParametersBag
     public function __construct()
     {
         add_action('init', function () {
-            $attrs = config('seo.open_graph', []);
+            $attrs = config('seo.opengraph', []);
             $this->parse($attrs);
 
             /** @var Metabox $metabox */
@@ -26,9 +26,9 @@ class SeoOpenGraph extends AbstractParametersBag
                 ->add(
                     'tify_options@options',
                     [
-                        'name'      => 'SeoOptionsOpenGraph',
+                        'name'      => 'SeoOptionsOpengraph',
                         'parent'    => 'SeoOptions',
-                        'content'   => OptionsOpenGraph::class,
+                        'content'   => OptionsOpengraph::class,
                         'position'  => 2
                     ]
                 );

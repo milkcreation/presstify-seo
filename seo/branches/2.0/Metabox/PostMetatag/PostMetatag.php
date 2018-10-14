@@ -1,11 +1,11 @@
 <?php
 
-namespace tiFy\Plugins\Seo\Metabox\PostMetaTag;
+namespace tiFy\Plugins\Seo\Metabox\PostMetatag;
 
 use tiFy\Metabox\AbstractMetaboxDisplayPostController;
 use tiFy\Plugins\Seo\SeoResolverTrait;
 
-class PostMetaTag extends AbstractMetaboxDisplayPostController
+class PostMetatag extends AbstractMetaboxDisplayPostController
 {
     use SeoResolverTrait;
 

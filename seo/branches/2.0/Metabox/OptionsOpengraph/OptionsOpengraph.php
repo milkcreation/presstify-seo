@@ -1,10 +1,10 @@
 <?php
 
-namespace tiFy\Plugins\Seo\Metabox\OptionsOpenGraph;
+namespace tiFy\Plugins\Seo\Metabox\OptionsOpengraph;
 
 use tiFy\Metabox\AbstractMetaboxDisplayOptionsController;
 
-class OptionsOpenGraph extends AbstractMetaboxDisplayOptionsController
+class OptionsOpengraph extends AbstractMetaboxDisplayOptionsController
 {
     /**
      * {@inheritdoc}
@@ -12,13 +12,13 @@ class OptionsOpenGraph extends AbstractMetaboxDisplayOptionsController
     public function content($args = null, $null1 = null, $null2 = null)
     {
         $this->set(
-            'open_graph',
+            'opengraph',
             array_merge(
                 [
                     'active' => 'off',
                     'image' => 0
                 ],
-                get_option('seo_open_graph', [])
+                get_option('seo_opengraph', [])
             )
         );
 
@@ -52,6 +52,6 @@ class OptionsOpenGraph extends AbstractMetaboxDisplayOptionsController
      */
     public function settings()
     {
-        return ['seo_open_graph'];
+        return ['seo_opengraph'];
     }
 }

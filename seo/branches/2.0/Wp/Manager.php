@@ -1,18 +1,15 @@
 <?php
 
-namespace tiFy\Plugins\Seo;
+namespace tiFy\Plugins\Seo\Wp;
 
-use tiFy\Kernel\Parameters\AbstractParametersBag;
 use tiFy\Metabox\Metabox;
-use tiFy\Plugins\Seo\Metabox\PostMetaTag\PostMetaTag;
+use tiFy\Kernel\Parameters\AbstractParametersBag;
+use tiFy\Plugins\Seo\Metabox\PostMetatag\PostMetatag;
+use tiFy\Plugins\Seo\SeoResolverTrait;
 
-class SeoMetaTag extends AbstractParametersBag
+class Manager extends AbstractParametersBag
 {
-    /**
-     * Liste des attributs de configuration.
-     * @var array
-     */
-    protected $attributes = [];
+    use SeoResolverTrait;
 
     /**
      * CONSTRUCTEUR.
@@ -24,7 +21,7 @@ class SeoMetaTag extends AbstractParametersBag
         add_action(
             'init',
             function () {
-                $attrs = config('seo.meta_tag', []);
+                $attrs = config('seo.wp', []);
                 $this->parse($attrs);
 
                 /** @var Metabox $metabox */
@@ -33,7 +30,7 @@ class SeoMetaTag extends AbstractParametersBag
                 $post_types = $this->has('post_type')
                     ? $this->get('post_type', [])
                     : array_keys(get_post_types());
-            
+
                 $post_types = array_diff(
                     $post_types, [
                         'attachment',
@@ -59,8 +56,8 @@ class SeoMetaTag extends AbstractParametersBag
                     $metabox->add(
                         "{$post_type}@post_type",
                         [
-                            'name' => "SeoPostMetaTag-{$post_type}",
-                            'content' => PostMetaTag::class
+                            'name'    => "SeoPostMetatag-{$post_type}",
+                            'content' => PostMetatag::class
                         ]
                     );
                 endforeach;

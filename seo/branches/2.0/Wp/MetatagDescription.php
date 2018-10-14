@@ -3,9 +3,9 @@
 namespace tiFy\Plugins\Seo\Wp;
 
 use tiFy\Kernel\Tools;
-use tiFy\Plugins\Seo\Contracts\SeoWpMetaTagInterface;
+use tiFy\Plugins\Seo\Contracts\WpMetatag;
 
-class SeoWpDescription extends AbstractSeoWpMetaTag implements SeoWpMetaTagInterface
+class MetatagDescription extends AbstractMetatag implements WpMetatag
 {
     /**
      * Nombre de caractères maximum.
@@ -158,7 +158,7 @@ class SeoWpDescription extends AbstractSeoWpMetaTag implements SeoWpMetaTagInter
     public function isPage()
     {
         return $this->getPost() ? : sprintf(
-            __('Page de contenu de la page %s.', 'tify'),
+            __('Page de contenu de %s.', 'tify'),
             get_the_title()
         );
     }
@@ -268,7 +268,10 @@ class SeoWpDescription extends AbstractSeoWpMetaTag implements SeoWpMetaTagInter
              ? esc_html(
                 Tools::Str()->excerpt(
                     $post->post_excerpt ? : $post->post_content,
-                    ['length' => $this->max]
+                    [
+                        'length' => $this->max,
+                        'teaser' => '',
+                    ]
                 )
             )
             : '';
