@@ -2,136 +2,275 @@
 
 namespace tiFy\Plugins\Seo\Wp;
 
-class SeoWpDescription
+use tiFy\Kernel\Tools;
+use tiFy\Plugins\Seo\Contracts\SeoWpMetaTagInterface;
+
+class SeoWpDescription extends AbstractSeoWpMetaTag implements SeoWpMetaTagInterface
 {
-    public function get()
+    /**
+     * Nombre de caractères maximum.
+     * @return int
+     */
+    protected $max = 156;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function is404()
     {
-        $desc = '';
-        // PAGE 404
-        if (is_404()) :
-            $desc = apply_filters('tify_seo_desc_is_404', __('Erreur 404 - Impossible de trouver la page', 'tify'));
-        // RECHERCHE
-        elseif (is_search()) :
-            $desc = apply_filters('tify_seo_desc_is_search',
-                sprintf('%1$s %2$s', __('Recherche de', 'tify'), get_search_query()));
-        // TAXONOMIES
-        elseif (is_tax()):
-            $tax = get_queried_object();
-            $desc = apply_filters('tify_seo_desc_is_tax',
-                sprintf('%1$s %2$s', get_taxonomy($tax->taxonomy)->label, $tax->name));
-        // FRONT PAGE
-        elseif (is_front_page()) :
-            if ($page_for_posts = get_option('page_on_front')) :
-                $desc = apply_filters('tify_seo_desc_is_page_on_front', $this->_get_singular_desc($page_for_posts));
-            else :
-                if (is_paged()) :
-                    global $wp_query;
-                    $desc = apply_filters('tify_seo_desc_is_front_paged',
-                        sprintf(__('Actualités page %1$s sur %2$s', 'tify'),
-                            (get_query_var('paged') ? get_query_var('paged') : 1), $wp_query->max_num_pages));
-                else :
-                    $desc = apply_filters('tify_seo_desc_is_front_page', __('Actualités', 'tify'));
-                endif;
-            endif;
-        // HOME PAGE
-        elseif (is_home()) :
-            if ($page_for_posts = get_option('page_for_posts')) :
-                $desc = apply_filters('tify_seo_desc_is_page_for_posts', $this->_get_singular_desc($page_for_posts));
-            else :
-                if (is_paged()) :
-                    global $wp_query;
-                    $desc = apply_filters('tify_seo_desc_is_home_paged',
-                        sprintf(__('Actualités page %1$s sur %2$s', 'tify'),
-                            (get_query_var('paged') ? get_query_var('paged') : 1), $wp_query->max_num_pages));
-                else :
-                    $desc = apply_filters('tify_seo_desc_is_home', __('Actualités', 'tify'));
-                endif;
-            endif;
-        // ATTACHMENT
-        elseif (is_attachment()) :
-            $desc = apply_filters('tify_seo_desc_is_attachment', esc_html(wp_strip_all_tags(get_the_title())));
-        // SINGLE
-        elseif (is_single()) :
-            $desc = apply_filters('tify_seo_desc_is_single', $this->_get_singular_desc(get_the_ID()));
-        // PAGE
-        elseif (is_page()) :
-            $desc = apply_filters('tify_seo_desc_is_page', $this->_get_singular_desc(get_the_ID()));
-        // CATEGORY
-        elseif (is_category()) :
-            if ($category = get_category(get_query_var('cat'), false)):
-                $desc = apply_filters('tify_seo_desc_is_category', $category->name);
-            endif;
-        // TAG
-        elseif (is_tag()):
-            $desc = apply_filters('tify_seo_desc_is_tag', sprintf(__('Mot clef : %1$s', 'tify'), get_query_var('tag')));
-        // AUTHOR
-        elseif (is_author()):
-            // DATE
-        elseif (is_date()) :
-            if (is_day()) :
-                $desc = apply_filters('tify_seo_desc_is_day',
-                    sprintf(__('Archive quotidienne : %1$s', 'tify'), get_the_date()));
-            elseif (is_month()) :
-                $desc = apply_filters('tify_seo_desc_is_month',
-                    sprintf(__('Archive mensuelle : %1$s', 'tify'), get_the_date('F Y')));
-            elseif (is_year()) :
-                $desc = apply_filters('tify_seo_desc_is_year',
-                    sprintf(__('Archive annuelle : %1$s', 'tify'), get_the_date('Y')));
-            endif;
-        // ARCHIVES
-        elseif (is_archive())    :
-            if (is_post_type_archive()) :
-                $desc = apply_filters('tify_seo_desc_is_post_type_archive', post_type_archive_title('', false));
-            else:
-                $desc = __('Archives', 'tify');
-            endif;
-        //** TODO **/
-        elseif (is_comments_popup()) :
-        elseif (is_paged()) :
-        else :
+        return __('Le contenu de cette page est actuellement indisponible.', 'tify');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isArchive()
+    {
+        $desc = is_post_type_archive()
+            ? sprintf(
+                __('Page liste des %s.', 'tify'),
+                post_type_archive_title('', false)
+            )
+            : __('Page liste des archives.', 'tify');
+
+
+        if (is_paged()) :
+            $desc = sprintf(
+                __('Page %s sur %s - %s', 'tify'),
+                (get_query_var('paged') ? get_query_var('paged') : 1),
+                $this->query()->max_num_pages,
+                $desc
+            );
+        endif;
+
+        return $desc;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isAuthor()
+    {
+        return sprintf(
+            __('Page liste des contenus édités par %s.', 'tify'),
+            get_the_author_meta('display_name', get_query_var('author'))
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isAttachment()
+    {
+        return $this->getPost() ? : sprintf(
+            __('Page du contenu média %s.', 'tify'),
+            get_the_title()
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isCategory()
+    {
+        /** @var \WP_Term $term */
+        return  (($term = get_category(get_query_var('cat'))) && (!$term instanceof \WP_Error))
+            ? sprintf(__('Page liste des contenus de la catégorie %s.', 'tify'), $term->name)
+            : __('Page liste des contenus d\'une catégorie indéterminée', 'tify');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isDate()
+    {
+        if (is_day()) :
+            return sprintf(
+                __('Page liste des contenus du %s', 'tify'),
+                get_the_date()
+            );
+        elseif (is_month()) :
+            return sprintf(
+                __('Page liste des contenus du %s', 'tify'),
+                get_the_date('F Y')
+            );
+        elseif (is_year()) :
+            return sprintf(
+                __('Page liste des contenus du %s', 'tify'),
+                get_the_date('Y')
+            );
         endif;
     }
 
-    /** == == **/
-    final public function tify_seo_desc_for_singular($desc)
+    /**
+     * {@inheritdoc}
+     */
+    public function isFrontPage()
     {
-        global $post;
+        $desc = ($page_on_front = get_option('page_on_front'))
+            ? $this->getPost($page_on_front)
+            : sprintf(
+                __('%s - %s - Bienvenue sur la page d\'accueil du site', 'tify'),
+                get_bloginfo('name'),
+                get_bloginfo('description')
+            );
 
-        if (($seo_meta = get_post_meta($post->ID, '_tify_seo_meta', true)) && !empty($seo_meta['desc'])) {
-            return $seo_meta['desc'];
-        }
+        if (is_paged()) :
+            $desc = sprintf(
+                __('Page %s sur %s - %s', 'tify'),
+                (get_query_var('paged') ? get_query_var('paged') : 1),
+                $this->query()->max_num_pages,
+                $desc
+            );
+        endif;
 
         return $desc;
     }
 
-    /** == == **/
-    final public function tify_seo_desc_for_archive($desc)
+    /**
+     * {@inheritdoc}
+     */
+    public function isHome()
     {
-        global $post;
+        $desc = ($page_for_posts = get_option('page_for_posts'))
+            ? $this->getPost($page_for_posts)
+            : sprintf(
+                __('%s - %s - Bienvenue sur la page d\'actualités du site', 'tify'),
+                get_bloginfo('name'),
+                get_bloginfo('description')
+            );
 
-        if (is_home() && ($page_for_posts = get_option('page_for_posts')) && ($seo_meta = get_post_meta($page_for_posts,
-                '_tify_seo_meta', true)) && !empty($seo_meta['desc'])) {
-            return $seo_meta['desc'];
-        }
+        if (is_paged()) :
+            $desc = sprintf(
+                __('Page %s sur %s - %s', 'tify'),
+                (get_query_var('paged') ? get_query_var('paged') : 1),
+                $this->query()->max_num_pages,
+                $desc
+            );
+        endif;
 
         return $desc;
     }
 
-    /** == == **/
-    private function _get_singular_desc($post_id)
+    /**
+     * {@inheritdoc}
+     */
+    public function isPage()
     {
-        // Bypass
-        if (!$post = get_post($post_id)) {
-            return;
-        }
-        /// Description
-        $desc = get_bloginfo('name') . '&nbsp;|&nbsp;' . get_bloginfo('description');
-        if ($post->post_excerpt) {
-            $desc = tify_excerpt(strip_tags($post->post_excerpt), ['max' => 156]);
-        } elseif ($post->post_content) {
-            $desc = tify_excerpt(strip_tags($post->post_content), ['max' => 156]);
-        }
+        return $this->getPost() ? : sprintf(
+            __('Page de contenu de la page %s.', 'tify'),
+            get_the_title()
+        );
+    }
 
-        return esc_html(wp_strip_all_tags($desc));
+    /**
+     * {@inheritdoc}
+     */
+    public function isPostTypeArchive()
+    {
+        $desc = sprintf(
+            __('Page liste des %s.', 'tify'),
+            post_type_archive_title('', false)
+        );
+
+        if (is_paged()) :
+            $desc = sprintf(
+                __('Page %s sur %s - %s', 'tify'),
+                (get_query_var('paged') ? get_query_var('paged') : 1),
+                $this->query()->max_num_pages,
+                $desc
+            );
+        endif;
+
+        return $desc;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSearch()
+    {
+        $desc = sprintf(
+            __('Résultats de recherche de "%s".', 'tify'),
+            get_search_query()
+        );
+
+        if (is_paged()) :
+            $desc = sprintf(
+                __('Page %s sur %s - %s', 'tify'),
+                (get_query_var('paged') ? get_query_var('paged') : 1),
+                $this->query()->max_num_pages,
+                $desc
+            );
+        endif;
+
+        return $desc;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSingle()
+    {
+        return $this->getPost() ? : sprintf(
+            __('Page de contenu de l\'article %s.', 'tify'),
+            get_the_title()
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSingular()
+    {
+        return $this->getPost() ? : sprintf(
+            __('Page de contenu de %s.', 'tify'),
+            get_the_title()
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isTag()
+    {
+        /** @var \WP_Term $term */
+        return  (($term = get_tag(get_query_var('tag'))) && (!$term instanceof \WP_Error))
+            ? sprintf(__('Page liste des contenus de l\'étiquette %s.', 'tify'), $term->name)
+            : __('Page liste des contenus d\'une étiquette indéterminée', 'tify');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isTax()
+    {
+        /** @var \WP_Term $term*/
+        $term = get_queried_object();
+
+        return sprintf(
+            __('Page liste des contenus %s en relation avec %s.', 'tify'),
+            get_taxonomy($term->taxonomy)->label,
+            $term->name
+        );
+    }
+
+    /**
+     * Récupération de la description générée à partir des information d'un contenu.
+     *
+     * @param null|int $post_id Identifiant de qualification du contenu. Courant par défaut.
+     *
+     * @return string
+     */
+    public function getPost($post_id = null)
+    {
+        return ($post = get_post($post_id))
+             ? esc_html(
+                Tools::Str()->excerpt(
+                    $post->post_excerpt ? : $post->post_content,
+                    ['length' => $this->max]
+                )
+            )
+            : '';
     }
 }

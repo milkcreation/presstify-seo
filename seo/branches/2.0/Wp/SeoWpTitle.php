@@ -2,9 +2,9 @@
 
 namespace tiFy\Plugins\Seo\Wp;
 
-use \WP_Query;
+use tiFy\Plugins\Seo\Contracts\SeoWpMetaTagInterface;
 
-class SeoWpTitle
+class SeoWpTitle extends AbstractSeoWpMetaTag implements SeoWpMetaTagInterface
 {
     /**
      * Séparateur des éléments du titre.
@@ -13,46 +13,64 @@ class SeoWpTitle
     protected $sep = '';
 
     /**
-     * Instance du controleur de requête globale de Wordpress.
-     * @var WP_Query
-     */
-    protected $wpQuery;
-
-    /**
      * CONSTRUCTEUR.
      *
      * @return void
      */
     public function __construct()
     {
-        add_filter(
+        /*add_filter(
             'pre_get_document_title',
             function ($title = '') {
-                /** @var WP_Query $wp_query */
-                global $wp_query;
-                $this->wpQuery = $wp_query;
-
                 $this->sep = apply_filters('document_title_separator', '-');
 
                 return $this->get($title);
             }
-        );
+        );*/
     }
 
     /**
-     * Récupération du suffixe de titre.
-     *
-     * @param string $title Intitulé courant.
+     * Récupération de l'élément de clotûre de titre.
      *
      * @return string
      */
-    public function append($title = '')
+    public function append()
     {
-        if ($title) :
-            $title .= sprintf(
-                ' %s %s',
-                $this->sep,
-                get_bloginfo('name')
+        return get_bloginfo('name') .
+            ($desc = get_bloginfo('description') ? " {$this->sep} {$this->desc}" : '');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get()
+    {
+        return $this->defaults() . $this->append();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function is404()
+    {
+        return __('Erreur 404 - Page introuvable', 'tify');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isArchive()
+    {
+        $title = is_post_type_archive()
+            ? post_type_archive_title('', false)
+            : __('Archives', 'tify');
+
+        if (is_paged()) :
+            $title = sprintf(
+                __('Page %s sur %s - %s', 'tify'),
+                (get_query_var('paged') ? get_query_var('paged') : 1),
+                $this->query()->max_num_pages,
+                $title
             );
         endif;
 
@@ -60,194 +78,185 @@ class SeoWpTitle
     }
 
     /**
-     * Récupération de la valeur par défaut de l'intitulé de la balise titre du site.
-     *
-     * @param string $title Intitulé courant.
-     *
-     * @return string|void
+     * {@inheritdoc}
      */
-    public function defaults($title = '')
+    public function isAuthor()
     {
-        if (!is_feed()) :
-            /**
-             * Page 404.
-             */
-            if (is_404()) :
-                $title = __('Erreur 404 - Impossible de trouver la page', 'tify');
+        return sprintf(
+            __('Contenu de : %s', 'tify'),
+            get_the_author_meta('display_name', get_query_var('author'))
+        );
+    }
 
-            /**
-             * Résultats de recherche.
-             */
-            elseif (is_search()) :
-                $title = sprintf(
-                    '%1$s %2$s',
-                    __('Recherche de', 'tify'),
-                    get_search_query()
-                );
+    /**
+     * {@inheritdoc}
+     */
+    public function isAttachment()
+    {
+        return get_the_title();
+    }
 
-            /**
-             * Archive d'une taxonomie.
-             */
-            elseif (is_tax()) :
-                $tax = get_queried_object();
+    /**
+     * {@inheritdoc}
+     */
+    public function isCategory()
+    {
+        /** @var \WP_Term $term */
+        return  (($term = get_category(get_query_var('cat'))) && (!$term instanceof \WP_Error))
+            ? sprintf(__('Catégorie : %s', 'tify'), $term->name)
+            : __('Catégorie non définie', 'tify');
+    }
 
-                $title = sprintf(
-                    '%1$s %2$s',
-                    get_taxonomy($tax->taxonomy)->label,
-                    $tax->name
-                );
+    /**
+     * {@inheritdoc}
+     */
+    public function isDate()
+    {
+        if (is_day()) :
+            return sprintf(
+                __('Archive quotidienne : %s', 'tify'),
+                get_the_date()
+            );
+        elseif (is_month()) :
+            return sprintf(
+                __('Archive mensuelle : %s', 'tify'),
+                get_the_date('F Y')
+            );
+        elseif (is_year()) :
+            return sprintf(
+                __('Archive annuelle : %s', 'tify'),
+                get_the_date('Y')
+            );
+        endif;
+    }
 
-            /**
-             * Page d'accueil.
-             */
-            elseif (is_front_page()) :
-                if ($page_for_posts = get_option('page_on_front')) :
-                    $title = esc_html(
-                        wp_strip_all_tags(
-                            get_the_title($page_for_posts)
-                        )
-                    );
+    /**
+     * {@inheritdoc}
+     */
+    public function isFrontPage()
+    {
+        $title = ($page_on_front = get_option('page_on_front'))
+            ? get_the_title($page_on_front)
+            : __('Accueil', 'tify');
 
-                else :
-                    if (is_paged()) :
-                        $title = sprintf(
-                            __('Actualités page %1$s sur %2$s', 'tify'),
-                            (get_query_var('paged') ? get_query_var('paged') : 1),
-                            $this->wpQuery->max_num_pages
-                        );
-                    else :
-                        $title = __('Actualités', 'tify');
-                    endif;
-                endif;
-
-            /**
-             * Page liste des actualités.
-             */
-            elseif (is_home()) :
-                if ($page_for_posts = get_option('page_for_posts')) :
-                    $title = esc_html(
-                        wp_strip_all_tags(
-                            get_the_title($page_for_posts)
-                        )
-                    );
-                else :
-                    $title = __('Actualités', 'tify');
-                endif;
-
-                if (is_paged()) :
-                    $title .= sprintf(
-                        __(' %1$s page %2$s sur %3$s', 'tify'),
-                        $this->sep,
-                        (get_query_var('paged') ? get_query_var('paged') : 1),
-                        $this->wpQuery->max_num_pages
-                    );
-                endif;
-
-            /**
-             * Page de fichier média.
-             */
-            elseif (is_attachment()) :
-                $title = esc_html(
-                    wp_strip_all_tags(get_the_title())
-                );
-
-            /**
-             * Article.
-             */
-            elseif (is_single()) :
-                $title = esc_html(
-                    wp_strip_all_tags(get_the_title())
-                );
-
-            /**
-             * Page.
-             */
-            elseif (is_page()) :
-                $_title = esc_html(
-                    wp_strip_all_tags(get_the_title())
-                );
-
-            /**
-             * Page liste des élements associés à une catégorie.
-             */
-            elseif (is_category()) :
-                if ($category = get_category(get_query_var('cat'), false)) :
-                    $title = esc_html(
-                        wp_strip_all_tags($category->name)
-                    );
-                else :
-                    $title = __('Catégorie non définie', 'tify');
-                endif;
-
-            /**
-             * Page liste des élements associés à une étiquette.
-             */
-            elseif (is_tag()):
-                $title = sprintf(
-                    __('Mot clef : %1$s', 'tify'),
-                    get_query_var('tag')
-                );
-
-            /**
-             * Page liste des élements associés à un auteur.
-             */
-            elseif (is_author()) :
-
-
-            /**
-             * Page liste des élements associés à une date.
-             */
-            elseif (is_date()) :
-                if (is_day()) :
-                    $title = sprintf(
-                        __('Archive quotidienne : %1$s', 'tify'),
-                        get_the_date()
-                    );
-                elseif (is_month()) :
-                    $title = sprintf(
-                        __('Archive mensuelle : %1$s', 'tify'),
-                        get_the_date('F Y')
-                    );
-                elseif (is_year()) :
-                    $title = sprintf(
-                        __('Archive annuelle : %1$s', 'tify'),
-                        get_the_date('Y')
-                    );
-                endif;
-
-            /**
-             * Page liste des élements.
-             */
-            elseif (is_archive())    :
-                if (is_post_type_archive()) :
-                    $title = post_type_archive_title('', false);
-                else:
-                    $title = __('Archives', 'tify');
-                endif;
-
-            /**
-             * @todo
-             */
-            //elseif (is_comments_popup()) :
-            elseif (is_paged()) :
-            else :
-            endif;
+        if (is_paged()) :
+            $title .= sprintf(
+                __(' %1$s page %2$s sur %3$s', 'tify'),
+                $this->sep,
+                (get_query_var('paged') ? get_query_var('paged') : 1),
+                $this->query()->max_num_pages
+            );
         endif;
 
         return $title;
     }
 
     /**
-     * Récupération de l'intitulé de la balise titre du site.
-     *
-     * @param string $title Intitulé courant.
-     *
-     * @return string|void
+     * {@inheritdoc}
      */
-    public function get($title = '')
+    public function isHome()
     {
-        $title = $this->defaults($title);
+        $title = ($page_for_posts = get_option('page_for_posts'))
+            ? get_the_title($page_for_posts)
+            : __('Actualités', 'tify');
 
-        return $this->append($title);
+        if (is_paged()) :
+            $title .= sprintf(
+                __(' %1$s page %2$s sur %3$s', 'tify'),
+                $this->sep,
+                (get_query_var('paged') ? get_query_var('paged') : 1),
+                $this->query()->max_num_pages
+            );
+        endif;
+
+        return $title;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPage()
+    {
+        return get_the_title();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPostTypeArchive()
+    {
+        $title = post_type_archive_title('', false);
+
+        if (is_paged()) :
+            $title = sprintf(
+                __('Page %s sur %s - %s', 'tify'),
+                (get_query_var('paged') ? get_query_var('paged') : 1),
+                $this->query()->max_num_pages,
+                $title
+            );
+        endif;
+
+        return $title;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSearch()
+    {
+        $title = sprintf('%1$s %2$s', __('Recherche de', 'tify'), get_search_query());
+
+        if (is_paged()) :
+            $title = sprintf(
+                __('Page %s sur %s - %s', 'tify'),
+                (get_query_var('paged') ? get_query_var('paged') : 1),
+                $this->query()->max_num_pages,
+                $title
+            );
+        endif;
+
+        return $title;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSingle()
+    {
+        return get_the_title();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSingular()
+    {
+        return get_the_title();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isTag()
+    {
+        /** @var \WP_Term $term */
+        return  (($term = get_tag(get_query_var('tag'))) && (!$term instanceof \WP_Error))
+            ? sprintf('Etiquette : %s', $term->name)
+            : __('Etiquette non définie', 'tify');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isTax()
+    {
+        /** @var \WP_Term $term*/
+        $term = get_queried_object();
+
+        return sprintf(
+            '%1$s : %2$s',
+            get_taxonomy($term->taxonomy)->label,
+            $term->name
+        );
     }
 }

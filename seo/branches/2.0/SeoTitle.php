@@ -43,21 +43,25 @@ class SeoTitle
         add_action(
             'wp',
             function () {
-                if ((($c = app(Route::class)->currentName()) || ($c = app('wp.ctags')->current())) && isset($this->items[$c])) :
-                    $this->title = $this->items[$c];
-                    if (isset($this->appends[$c])) :
-                        $this->title[] = $this->appends[$c];
-                    elseif (isset($this->appends['*'])) :
-                        $this->title[] = $this->appends['*'];
+                $title = '';
+
+                if (($c = app(Route::class)->currentName()) || ($c = app('wp.ctags')->current())) :
+                    if ($title = $this->getTitle($c)) :
+                        if ($append = $this->getAppend($c)) :
+                            $title[] = $append;
+                        elseif ($append = $this->getAppend('*')) :
+                            $title[] = $append;
+                        endif;
                     endif;
                 endif;
 
-                if (!$this->title && isset($this->items['*'])) :
-                    $this->title = $this->items['*'];
-                    if (isset($this->appends['*'])) :
-                        $this->title[] = $this->appends['*'];
+                if (!$title && ($title = $this->getTitle($c))) :
+                    if ($append = $this->getAppend('*')) :
+                        $title[] = $append;
                     endif;
                 endif;
+
+                $this->title = $title;
             },
             999999
         );
@@ -112,7 +116,7 @@ class SeoTitle
     }
 
     /**
-     * Déclaration d'un élément de cloture du titre de la page selon son contexte d'affichage.
+     * Déclaration d'une chaîne de clôture du titre de la page selon son contexte d'affichage.
      *
      * @param string Valeur de l'élément de cloture.
      * @param string $context Contexte associé. '*' par défaut.
@@ -147,16 +151,26 @@ class SeoTitle
     }
 
     /**
-     * Récupération du contenu de la balise.
+     * Récupération de la chaîne de clôture du titre de la page selon le contexte d'affichage.
+     *
+     * @param string $context Contexte associé. '*' par défaut.
      *
      * @return string
      */
-    public function getContent()
+    public function getAppend($context = '*')
     {
-        return esc_attr(
-            strip_tags(
-                stripslashes($this->title)
-            )
-        );
+        return (isset($this->appends[$context])) ? $this->appends[$context] : '';
+    }
+
+    /**
+     * Récupération du titre de la page selon le contexte d'affichage.
+     *
+     * @param string $context Contexte associé. '*' par défaut.
+     *
+     * @return string
+     */
+    public function getTitle($context = '*')
+    {
+        return (isset($this->items[$context])) ? $this->items[$context] : '';
     }
 }
