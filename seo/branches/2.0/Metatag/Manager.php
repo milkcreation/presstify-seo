@@ -76,7 +76,8 @@ class Manager
                             // Récupération des valeurs de contexte depuis le fichier de configuration.
                             $value = config("seo.metatag.{$tag}.{$c}");
                             if (!is_null($value)) :
-                                $tags[$tag] = $value;
+                                $metatag->add($value, $c);
+                                $tags[$tag] = $metatag->get($c);
                                 break;
                             endif;
 

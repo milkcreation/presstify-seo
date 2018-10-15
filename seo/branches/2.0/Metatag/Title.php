@@ -14,7 +14,7 @@ class Title extends AbstractMetatag
     public function __construct()
     {
         $this->sep = ($sep = apply_filters('document_title_separator', '-'))
-            ? " {$sep}"
+            ? " {$sep} "
             : '';
     }
 
