@@ -15,7 +15,9 @@ return [
      *              Déclaration du nom de qualification de la balise en indice et tableau de contexte.
      *              Les clés des contextes peuvent être des contextes Wordpress (home|front|...) @see \tiFy\Wp\WpCtags
      *              ou un nom de qualification d'une route déclarée.
-     * - cas 3 :    ex. robots
+     * - cas 3 :    ex. keywords
+     *              Désactivation de la balise pour tous les contextes.
+     * - cas 4 :    ex. robots
      *              Déclaration du nom de qualification de la balise en indice et valeur de contexte global.
      *              La valeur de la balise sera la même sur toutes les pages du site.
      *              NB. La valeur par défaut de la balise robots est déjà 'index, follow'.
@@ -27,7 +29,7 @@ return [
             'front' => 'Page d\'accueil du site',
             'home'  => 'Page liste des actualités'
         ],
-        'keywords',
+        'keywords' => false,
         'robots' => 'index, follow',
     ],
     'wp'      => [
