@@ -10,7 +10,7 @@ abstract class AbstractMetatag implements Metatag
      * Liste des éléments de clotûre déclarés par contexte.
      * @var string[]
      */
-    protected $appends = [];
+    protected $ends = [];
 
     /**
      * Valeur du contenu de la balise.
@@ -55,13 +55,13 @@ abstract class AbstractMetatag implements Metatag
     /**
      * {@inheritdoc}
      */
-    public function append($content, $context = '*')
+    public function end($value = '', $context = '*')
     {
-        if (!isset($this->appends[$context])) :
-            $this->appends[$context] = [];
+        if (!isset($this->ends[$context])) :
+            $this->ends[$context] = [];
         endif;
 
-        $this->appends[$context] = $content;
+        $this->ends[$context] = $value;
 
         return $this;
     }
@@ -88,8 +88,8 @@ abstract class AbstractMetatag implements Metatag
             $items = $this->items[$context];
         endif;
 
-        if (isset($this->appends[$context])) :
-            $items[] = $this->appends[$context];
+        if (isset($this->ends[$context])) :
+            $items[] = $this->ends[$context];
         endif;
 
         return $items;

@@ -4,9 +4,9 @@ namespace tiFy\Plugins\Seo;
 
 use tiFy\Contracts\Views\ViewInterface;
 use tiFy\Contracts\Views\ViewsInterface;
+use tiFy\Plugins\Seo\Contracts\Metatag;
 use tiFy\Plugins\Seo\Seo;
-use tiFy\Plugins\Seo\Metatag\Description as MetatagDescription;
-use tiFy\Plugins\Seo\Metatag\Title as MetatagTitle;
+use tiFy\Plugins\Seo\Metatag\Manager as MetatagManager;
 
 trait SeoResolverTrait
 {
@@ -29,6 +29,29 @@ trait SeoResolverTrait
         $path = '/Resources/assets/' . ltrim($path, '/');
 
         return file_exists($cinfo->getDirname() . $path) ? class_info($this)->getUrl() . $path : '';
+    }
+
+    /**
+     * Récupération de l'instance du gestionnaire de balise méta ou définition d'une méta balise.
+     *
+     * @param null|string $tag Nom de qualification de la balise.
+     * @param null|string $value Valeur de la balise à définir.
+     * @param string $context Contexte associé. '*' par défaut.
+     *
+     * @return MetatagManager|Metatag
+     */
+    public function metatag($tag = null, $value = null, $context = '*')
+    {
+        /** @var MetatagManager $metatag */
+        $metatag = app('seo.metatag.manager');
+
+        if (is_null($tag)) :
+            return $metatag;
+        elseif(is_null($value)) :
+            return $metatag->make($tag);
+        endif;
+
+        return $metatag->add($tag, $value, $context);
     }
 
     /**

@@ -24,14 +24,14 @@ interface Metatag
     public function add($value, $context = '*');
 
     /**
-     * Ajout d'un élément de clôture selon son contexte d'affichage.
+     * Définition de l'élément de clôture selon son contexte d'affichage.
      *
-     * @param string Valeur de l'élément.
+     * @param string $value Valeur de l'élément.
      * @param string $context Contexte associé. '*' par défaut.
      *
      * @return $this
      */
-    public function append($content, $context = '*');
+    public function end($value = '', $context = '*');
 
     /**
      * Suppression de la liste des éléments déclarés selon le contexte d'affichage.

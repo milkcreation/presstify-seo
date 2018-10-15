@@ -27,7 +27,7 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
      *
      * @return string
      */
-    public function append()
+    public function end()
     {
         return get_bloginfo('name') .
             (($desc = get_bloginfo('description')) ? " {$this->sep} {$desc}" : '');
@@ -38,7 +38,7 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
      */
     public function get()
     {
-        return $this->defaults() . (($append = $this->append()) ? " {$this->sep} {$append}": '');
+        return $this->defaults() . (($end = $this->end()) ? " {$this->sep} {$end}": '');
     }
 
     /**
