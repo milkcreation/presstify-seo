@@ -88,8 +88,12 @@ abstract class AbstractMetatag implements Metatag
             $items = $this->items[$context];
         endif;
 
-        if (isset($this->ends[$context])) :
-            $items[] = $this->ends[$context];
+        if (!empty($items)) :
+            if (isset($this->ends[$context])) :
+                $items[] = $this->ends[$context];
+            elseif (($context !== '*') && isset($this->ends['*'])) :
+                $items[] = $this->ends['*'];
+            endif;
         endif;
 
         return $items;
