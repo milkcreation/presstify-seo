@@ -2,7 +2,7 @@
 
 namespace tiFy\Plugins\Seo\Contracts;
 
-use tiFy\Contracts\Partial\PartialItemInterface;
+use tiFy\Contracts\Partial\PartialController;
 
 interface Metatag
 {
@@ -77,7 +77,7 @@ interface Metatag
     /**
      * Instance de balise représentative des élements.
      *
-     * @return PartialItemInterface
+     * @return PartialController
      */
     public function tag();
 }

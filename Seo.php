@@ -6,7 +6,7 @@
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstify-plugins/seo
  * @namespace \tiFy\Plugins\Seo
- * @version 2.0.4
+ * @version 2.0.5
  */
 
 namespace tiFy\Plugins\Seo;
