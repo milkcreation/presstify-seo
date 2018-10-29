@@ -2,10 +2,10 @@
 
 namespace tiFy\Plugins\Seo\Metabox\PostMetatag;
 
-use tiFy\Metabox\AbstractMetaboxDisplayPostController;
+use tiFy\Metabox\MetaboxWpPostController;
 use tiFy\Plugins\Seo\SeoResolverTrait;
 
-class PostMetatag extends AbstractMetaboxDisplayPostController
+class PostMetatag extends MetaboxWpPostController
 {
     use SeoResolverTrait;
 
