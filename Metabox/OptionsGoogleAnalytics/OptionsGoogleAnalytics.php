@@ -11,7 +11,10 @@ class OptionsGoogleAnalytics extends MetaboxWpOptionsController
      */
     public function content($args = null, $null1 = null, $null2 = null)
     {
-        $this->set('ua_code', get_option('seo_ua_code', ''));
+        $this->set(
+            'ua_code',
+            app('seo.google.analytics')->get('ua_code')
+        );
 
         return $this->viewer('content', $this->all());
     }

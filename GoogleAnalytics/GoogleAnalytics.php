@@ -3,11 +3,11 @@
 namespace tiFy\Plugins\Seo\GoogleAnalytics;
 
 use tiFy\Contracts\Metabox\MetaboxManager;
-use tiFy\Kernel\Parameters\AbstractParametersBag;
+use tiFy\Kernel\Parameters\ParamsBagController;
 use tiFy\Plugins\Seo\Metabox\OptionsGoogleAnalytics\OptionsGoogleAnalytics;
 use tiFy\Plugins\Seo\SeoResolverTrait;
 
-class GoogleAnalytics extends AbstractParametersBag
+class GoogleAnalytics extends ParamsBagController
 {
     use SeoResolverTrait;
 
@@ -37,34 +37,35 @@ class GoogleAnalytics extends AbstractParametersBag
             999999
         );
 
-        add_action('init', function () {
-            $attrs = config('seo.google_analytics', []);
-            $this->parse($attrs);
+        add_action(
+            'init',
+            function () {
+                $attrs = config('seo.google_analytics', []);
+                $this->parse($attrs);
 
-            /** @var MetaboxManager $metabox */
-            $metabox = resolve('metabox');
-            $metabox
-                ->add(
-                    'SeoOptionsGoogleAnalytics',
-                    'tify_options@options',
-                    [
-                        'parent'    => 'SeoOptions',
-                        'content'   => OptionsGoogleAnalytics::class,
-                        'position'  => 1
-                    ]
-                );
+                if ($this->get('admin')) :
+                    app('seo')->addOptionsMetabox(
+                        'SeoOptionsGoogleAnalytics',
+                        [
+                            'content'   => OptionsGoogleAnalytics::class
+                        ]
+                    );
+                endif;
             },
-            999999
+            999998
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function defaults($attrs = [])
+    public function parse($attrs = [])
     {
-        return [
-            'ua_code' => get_option('seo_ua_code', '')
-        ];
+        parent::parse($attrs);
+
+        $this->set(
+            'ua_code',
+            get_option('seo_ua_code') ? : config('seo.google_analytics.ua_code', '')
+        );
     }
 }

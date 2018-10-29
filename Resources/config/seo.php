@@ -5,6 +5,15 @@
  */
 
 return [
+    'google_analytics' => [
+        'admin'   => true,
+        'ua_code' => ''
+    ],
+
+    'opengraph' => [
+        'admin'   => true
+    ],
+
     /**
      * Configuration des balises de référencement.
      * {@internal Usage :
@@ -32,6 +41,7 @@ return [
         'keywords' => false,
         'robots' => 'index, follow',
     ],
+
     'wp'      => [
         'post_type' => [],
     ],
