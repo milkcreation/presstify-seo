@@ -2,12 +2,22 @@
 
 namespace tiFy\Plugins\Seo\Opengraph;
 
-use tiFy\Contracts\Metabox\MetaboxManager;
-use tiFy\Kernel\Parameters\AbstractParametersBag;
+use tiFy\Kernel\Parameters\ParamsBagController;
 use tiFy\Plugins\Seo\Metabox\OptionsOpengraph\OptionsOpengraph;
+use tiFy\Plugins\Seo\SeoResolverTrait;
 
-class Opengraph extends AbstractParametersBag
+class Opengraph extends ParamsBagController
 {
+    use SeoResolverTrait;
+
+    /**
+     * Liste des attributs de configuration.
+     * @var array
+     */
+    protected $attributes = [
+        'admin'   => true
+    ];
+
     /**
      * CONSTRUCTEUR.
      *
@@ -15,25 +25,23 @@ class Opengraph extends AbstractParametersBag
      */
     public function __construct()
     {
-        add_action('init', function () {
-            $attrs = config('seo.opengraph', []);
-            $this->parse($attrs);
+        add_action(
+            'init',
+            function () {
+                $attrs = config('seo.opengraph', []);
+                $this->parse($attrs);
 
-            /** @var MetaboxManager $metabox */
-            $metabox = resolve('metabox');
-
-            $metabox
-                ->add(
-                    'SeoOptionsOpengraph',
-                    'tify_options@options',
-                    [
-                        'parent'    => 'SeoOptions',
-                        'content'   => OptionsOpengraph::class,
-                        'position'  => 2
-                    ]
-                );
+                if ($this->get('admin')) :
+                    app('seo')->addOptionsMetabox(
+                        'SeoOptionsOpengraph',
+                        [
+                            'parent'    => 'SeoOptions',
+                            'content'   => OptionsOpengraph::class
+                        ]
+                    );
+                endif;
             },
-            999999
+            999998
         );
 
         add_filter(
