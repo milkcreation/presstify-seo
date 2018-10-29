@@ -2,9 +2,9 @@
 
 namespace tiFy\Plugins\Seo\Metabox\OptionsOpengraph;
 
-use tiFy\Metabox\AbstractMetaboxDisplayOptionsController;
+use tiFy\Metabox\MetaboxWpOptionsController;
 
-class OptionsOpengraph extends AbstractMetaboxDisplayOptionsController
+class OptionsOpengraph extends MetaboxWpOptionsController
 {
     /**
      * {@inheritdoc}

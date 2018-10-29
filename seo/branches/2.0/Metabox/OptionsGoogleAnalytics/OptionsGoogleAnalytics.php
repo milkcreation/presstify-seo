@@ -2,9 +2,9 @@
 
 namespace tiFy\Plugins\Seo\Metabox\OptionsGoogleAnalytics;
 
-use tiFy\Metabox\AbstractMetaboxDisplayOptionsController;
+use tiFy\Metabox\MetaboxWpOptionsController;
 
-class OptionsGoogleAnalytics extends AbstractMetaboxDisplayOptionsController
+class OptionsGoogleAnalytics extends MetaboxWpOptionsController
 {
     /**
      * {@inheritdoc}

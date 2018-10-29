@@ -2,8 +2,8 @@
 
 namespace tiFy\Plugins\Seo\GoogleAnalytics;
 
+use tiFy\Contracts\Metabox\MetaboxManager;
 use tiFy\Kernel\Parameters\AbstractParametersBag;
-use tiFy\Metabox\Metabox;
 use tiFy\Plugins\Seo\Metabox\OptionsGoogleAnalytics\OptionsGoogleAnalytics;
 use tiFy\Plugins\Seo\SeoResolverTrait;
 
@@ -41,13 +41,13 @@ class GoogleAnalytics extends AbstractParametersBag
             $attrs = config('seo.google_analytics', []);
             $this->parse($attrs);
 
-            /** @var Metabox $metabox */
-            $metabox = resolve(Metabox::class);
+            /** @var MetaboxManager $metabox */
+            $metabox = resolve('metabox');
             $metabox
                 ->add(
+                    'SeoOptionsGoogleAnalytics',
                     'tify_options@options',
                     [
-                        'name'      => 'SeoOptionsGoogleAnalytics',
                         'parent'    => 'SeoOptions',
                         'content'   => OptionsGoogleAnalytics::class,
                         'position'  => 1

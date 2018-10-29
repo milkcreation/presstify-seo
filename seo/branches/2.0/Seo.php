@@ -6,12 +6,12 @@
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstify-plugins/seo
  * @namespace \tiFy\Plugins\Seo
- * @version 2.0.5
+ * @version 2.0.6
  */
 
 namespace tiFy\Plugins\Seo;
 
-use tiFy\Metabox\Metabox;
+use tiFy\Contracts\Metabox\MetaboxManager;
 use tiFy\Plugins\Seo\SeoResolverTrait;
 
 final class Seo
@@ -26,14 +26,14 @@ final class Seo
     public function __construct()
     {
         add_action('init', function () {
-            /** @var Metabox $metabox */
-            $metabox = resolve(Metabox::class);
+            /** @var MetaboxManager $metabox */
+            $metabox = resolve('metabox');
 
             $metabox
                 ->add(
+                    'SeoOptions',
                     'tify_options@options',
                     [
-                        'name'  => 'SeoOptions',
                         'title' => __('Référencement', 'tify'),
                     ]
                 );
