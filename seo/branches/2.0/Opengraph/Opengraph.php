@@ -2,11 +2,11 @@
 
 namespace tiFy\Plugins\Seo\Opengraph;
 
-use tiFy\Kernel\Parameters\ParamsBagController;
+use tiFy\Kernel\Params\ParamsBag;
 use tiFy\Plugins\Seo\Metabox\OptionsOpengraph\OptionsOpengraph;
 use tiFy\Plugins\Seo\SeoResolverTrait;
 
-class Opengraph extends ParamsBagController
+class Opengraph extends ParamsBag
 {
     use SeoResolverTrait;
 

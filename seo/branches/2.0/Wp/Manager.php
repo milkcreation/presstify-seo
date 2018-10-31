@@ -3,11 +3,11 @@
 namespace tiFy\Plugins\Seo\Wp;
 
 use tiFy\Contracts\Metabox\MetaboxManager;
-use tiFy\Kernel\Parameters\AbstractParametersBag;
+use tiFy\Kernel\Params\ParamsBag;
 use tiFy\Plugins\Seo\Metabox\PostMetatag\PostMetatag;
 use tiFy\Plugins\Seo\SeoResolverTrait;
 
-class Manager extends AbstractParametersBag
+class Manager extends ParamsBag
 {
     use SeoResolverTrait;
 
