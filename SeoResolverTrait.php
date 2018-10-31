@@ -2,8 +2,8 @@
 
 namespace tiFy\Plugins\Seo;
 
-use tiFy\Contracts\Views\ViewInterface;
-use tiFy\Contracts\Views\ViewsInterface;
+use tiFy\Contracts\View\ViewController;
+use tiFy\Contracts\View\ViewEngine;
 use tiFy\Plugins\Seo\Contracts\Metatag;
 use tiFy\Plugins\Seo\Metatag\Manager as MetatagManager;
 
@@ -11,7 +11,7 @@ trait SeoResolverTrait
 {
     /**
      * Instance du moteur de gabarits d'affichage.
-     * @return ViewsInterface
+     * @return ViewEngine
      */
     protected $viewer;
 
@@ -61,7 +61,7 @@ trait SeoResolverTrait
      * @param null|string view Nom de qualification du gabarit.
      * @param array $data Liste des variables passées en argument.
      *
-     * @return ViewsInterface|ViewInterface
+     * @return ViewController|ViewEngine
      */
     public function viewer($view = null, $data = [])
     {

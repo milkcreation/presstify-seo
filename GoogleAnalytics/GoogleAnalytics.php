@@ -3,11 +3,11 @@
 namespace tiFy\Plugins\Seo\GoogleAnalytics;
 
 use tiFy\Contracts\Metabox\MetaboxManager;
-use tiFy\Kernel\Parameters\ParamsBagController;
+use tiFy\Kernel\Params\ParamsBag;
 use tiFy\Plugins\Seo\Metabox\OptionsGoogleAnalytics\OptionsGoogleAnalytics;
 use tiFy\Plugins\Seo\SeoResolverTrait;
 
-class GoogleAnalytics extends ParamsBagController
+class GoogleAnalytics extends ParamsBag
 {
     use SeoResolverTrait;
 
