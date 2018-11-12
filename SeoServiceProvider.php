@@ -10,7 +10,6 @@ use tiFy\Plugins\Seo\Metatag\MetatagItemController;
 use tiFy\Plugins\Seo\Metatag\Robots as MetatagRobots;
 use tiFy\Plugins\Seo\Metatag\Title as MetatagTitle;
 use tiFy\Plugins\Seo\Opengraph\Opengraph;
-use tiFy\Plugins\Seo\Seo;
 use tiFy\Plugins\Seo\Wp\Manager as WpManager;
 use tiFy\Plugins\Seo\Wp\MetatagDescription as WpMetatagDescription;
 use tiFy\Plugins\Seo\Wp\MetatagTitle as WpMetatagTitle;
@@ -23,7 +22,7 @@ class SeoServiceProvider extends AppServiceProvider
     public function boot()
     {
         $this->app->singleton('seo', function () {
-            return new Seo();
+            return new SeoManager();
         })->build();
 
         $this->app->singleton('seo.google.analytics', function () {

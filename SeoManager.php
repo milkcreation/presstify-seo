@@ -6,7 +6,7 @@
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstify-plugins/seo
  * @namespace \tiFy\Plugins\Seo
- * @version 2.0.8
+ * @version 2.0.9
  */
 
 namespace tiFy\Plugins\Seo;
@@ -14,7 +14,7 @@ namespace tiFy\Plugins\Seo;
 use tiFy\Contracts\Metabox\MetaboxManager;
 use tiFy\Plugins\Seo\SeoResolverTrait;
 
-final class Seo
+final class SeoManager
 {
     use SeoResolverTrait;
 

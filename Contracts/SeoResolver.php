@@ -10,13 +10,29 @@ use tiFy\Plugins\Seo\Metatag\Manager as MetatagManager;
 interface SeoResolver
 {
     /**
-     * Récupération de l'url d'une ressource du répertoire des assets.
+     * Récupération de l'instance du gestionnaire principal.
+     *
+     * @return SeoManager
+     */
+    public function manager();
+
+    /**
+     * Récupération du chemin absolu vers une ressource.
      *
      * @param string $path Chemin relatif de la ressource.
      *
-     * @return string
+     * @return resource
      */
-    public function assetsUrl($path = '');
+    public function resourcesDir($path = '');
+
+    /**
+     * Récupération de l'url absolue vers une ressource.
+     *
+     * @param string $path Chemin relatif de la ressource.
+     *
+     * @return resource
+     */
+    public function resourcesUrl($path = '');
 
     /**
      * Récupération de l'instance du gestionnaire de balise méta ou définition d'une méta balise.

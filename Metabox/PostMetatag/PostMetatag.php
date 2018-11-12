@@ -2,8 +2,11 @@
 
 namespace tiFy\Plugins\Seo\Metabox\PostMetatag;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use tiFy\Metabox\MetaboxWpPostController;
 use tiFy\Plugins\Seo\SeoResolverTrait;
+use tiFy\Wp\Query\Post;
 
 class PostMetatag extends MetaboxWpPostController
 {
@@ -14,26 +17,19 @@ class PostMetatag extends MetaboxWpPostController
      */
     public function content($post = null, $args = null, $null = null)
     {
-        /*
-        $value = wp_parse_args((($_value = get_post_meta($post->ID, '_tify_seo_meta', true)) ? $_value : []),
-            ['title' => '', 'url' => '', 'desc' => '']);
+        /** @var Post $queryPost */
+        $queryPost = app('wp.query.post', [$post]);
 
-        // Valeurs originales
-        /// Titre
-        $original_title = esc_attr($post->post_title) . (\tiFy\Plugins\Seo\Seo::$append_blogname ? \tiFy\Plugins\Seo\Seo::$sep . get_bloginfo('name') : '') . (\tiFy\Plugins\Seo\Seo::$append_sitedesc ? \tiFy\Plugins\Seo\Seo::$sep . get_bloginfo('description',
-                    'display') : '');
-        /// Url
-        list($permalink, $post_name) = get_sample_permalink($post->ID);
-        $original_url = str_replace(['%pagename%', '%postname%'], $post_name, urldecode($permalink));
-        /// Description
-        $original_desc = get_bloginfo('name') . '&nbsp;|&nbsp;' . get_bloginfo('description');
-        if ($post->post_excerpt) {
-            $original_desc = tify_excerpt(strip_tags(html_entity_decode($post->post_excerpt)), ['max' => 156]);
-        } elseif ($post->post_content) {
-            $original_desc = tify_excerpt(strip_tags(html_entity_decode($post->post_content)), ['max' => 156]);
-        } */
+        $datas = array_merge(
+            [
+                'orig_title' => $queryPost->getTitle(true),
+                'orig_url'   => $queryPost->getPermalink(),
+                'orig_desc'  => Str::limit($queryPost->getExcerpt(true), 155, '')
+            ],
+            Arr::wrap(get_post_meta($post->ID, '_seo_metatag', true))
+        );
 
-        return 'toto';
+        return $this->viewer('admin/post/metatag', $datas);
     }
 
     /**
@@ -52,18 +48,20 @@ class PostMetatag extends MetaboxWpPostController
         add_action(
             'admin_enqueue_scripts',
             function () {
+                field('text-remaining')->enqueue_scripts();
+
                 wp_enqueue_style(
                     'SeoMetatag',
-                    $this->assetsUrl('/css/admin-metatag.css'),
+                    $this->resourcesUrl('/assets/css/admin-post-metatag.css'),
                     [],
-                    150323
+                    181108
                 );
 
                 wp_enqueue_script(
                     'SeoMetatag',
-                    $this->assetsUrl('/js/admin-metatag.js'),
+                    $this->resourcesUrl('/assets/js/admin-post-metatag.js'),
                     ['jquery'],
-                    150323,
+                    181108,
                     true
                 );
             }
@@ -75,6 +73,6 @@ class PostMetatag extends MetaboxWpPostController
      */
     public function metadatas()
     {
-        return ['_seo_meta'];
+        return ['_seo_metatag'];
     }
 }

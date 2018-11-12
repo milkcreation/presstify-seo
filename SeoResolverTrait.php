@@ -10,24 +10,43 @@ use tiFy\Plugins\Seo\Metatag\Manager as MetatagManager;
 trait SeoResolverTrait
 {
     /**
-     * Instance du moteur de gabarits d'affichage.
-     * @return ViewEngine
+     * Récupération de l'instance du gestionnaire principal.
+     *
+     * @return SeoManager
      */
-    protected $viewer;
+    public function manager()
+    {
+        return app('seo');
+    }
 
     /**
-     * Récupération de l'url d'une ressource du répertoire des assets.
+     * Récupération du chemin absolu vers une ressource.
      *
      * @param string $path Chemin relatif de la ressource.
      *
-     * @return string
+     * @return resource
      */
-    public function assetsUrl($path = '')
+    public function resourcesDir($path = '')
     {
-        $cinfo = class_info($this);
-        $path = '/Resources/assets/' . ltrim($path, '/');
+        $cinfo = class_info($this->manager());
+        $path = '/Resources/' . ltrim($path, '/');
 
-        return file_exists($cinfo->getDirname() . $path) ? class_info($this)->getUrl() . $path : '';
+        return file_exists($cinfo->getDirname() . $path) ? $cinfo->getDirname() . $path : '';
+    }
+
+    /**
+     * Récupération de l'url absolue vers une ressource.
+     *
+     * @param string $path Chemin relatif de la ressource.
+     *
+     * @return resource
+     */
+    public function resourcesUrl($path = '')
+    {
+        $cinfo = class_info($this->manager());
+        $path = '/Resources/' . ltrim($path, '/');
+
+        return file_exists($cinfo->getDirname() . $path) ? $cinfo->getUrl() . $path : '';
     }
 
     /**
@@ -65,17 +84,26 @@ trait SeoResolverTrait
      */
     public function viewer($view = null, $data = [])
     {
-        if (!$this->viewer) :
-            $default_dir = __DIR__ . '/Resources/views';
-            $this->viewer = view()
-                ->setDirectory(is_dir($default_dir) ? $default_dir : null)
-                ->setOverrideDir($default_dir);
+        if (!app()->bound('seo.viewer')) :
+            app()->singleton(
+                'seo.viewer',
+                function () {
+                    $default_dir = $this->resourcesDir('/views');
+
+                    return view()
+                        ->setDirectory(is_dir($default_dir) ? $default_dir : null)
+                        ->setOverrideDir($default_dir);
+                }
+            );
         endif;
+
+        /** @var ViewEngine $viewer */
+        $viewer = app('seo.viewer');
 
         if (func_num_args() === 0) :
-            return $this->viewer;
+            return $viewer;
         endif;
 
-        return $this->viewer->make("_override::{$view}", $data);
+        return $viewer->make("_override::{$view}", $data);
     }
 }

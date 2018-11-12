@@ -52,7 +52,7 @@ class Manager extends ParamsBag
                     elseif (!$wp_post_type->publicly_queryable && ($post_type !== 'page')) :
                         continue;
                     endif;
-                    /*
+
                     $metabox->add(
                         "SeoPostMetatag--{$post_type}",
                         "{$post_type}@post_type",
@@ -60,7 +60,6 @@ class Manager extends ParamsBag
                             'content' => PostMetatag::class
                         ]
                     );
-                    */
                 endforeach;
             },
             999999

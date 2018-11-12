@@ -3,9 +3,12 @@
 namespace tiFy\Plugins\Seo\Metabox\OptionsGoogleAnalytics;
 
 use tiFy\Metabox\MetaboxWpOptionsController;
+use tiFy\Plugins\Seo\SeoResolverTrait;
 
 class OptionsGoogleAnalytics extends MetaboxWpOptionsController
 {
+    use SeoResolverTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -16,7 +19,7 @@ class OptionsGoogleAnalytics extends MetaboxWpOptionsController
             app('seo.google.analytics')->get('ua_code')
         );
 
-        return $this->viewer('content', $this->all());
+        return $this->viewer('admin/options/google-analytics', $this->all());
     }
 
     /**
