@@ -1,5 +1,7 @@
 <?php
 /**
+ * Réglage des options - Open Graph.
+ * ---------------------------------------------------------------------------------------------------------------------
  * @var tiFy\Contracts\View\ViewController $this
  */
 ?>

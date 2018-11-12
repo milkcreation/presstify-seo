@@ -1,5 +1,7 @@
 <?php
 /**
+ * Réglage des options - Google Analytics.
+ * ---------------------------------------------------------------------------------------------------------------------
  * @var tiFy\Contracts\View\ViewController $this
  */
 ?>

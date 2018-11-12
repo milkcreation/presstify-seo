@@ -3,9 +3,12 @@
 namespace tiFy\Plugins\Seo\Metabox\OptionsOpengraph;
 
 use tiFy\Metabox\MetaboxWpOptionsController;
+use tiFy\Plugins\Seo\SeoResolverTrait;
 
 class OptionsOpengraph extends MetaboxWpOptionsController
 {
+    use SeoResolverTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -22,7 +25,7 @@ class OptionsOpengraph extends MetaboxWpOptionsController
             )
         );
 
-        return $this->viewer('content', $this->all());
+        return $this->viewer('admin/options/opengraph', $this->all());
     }
 
     /**
