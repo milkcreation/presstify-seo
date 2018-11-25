@@ -2,11 +2,11 @@
 
 namespace tiFy\Plugins\Seo\Metatag;
 
+use tiFy\Contracts\Routing\Router;
 use tiFy\Contracts\Wp\Ctags;
 use tiFy\Plugins\Seo\Contracts\Metatag;
 use tiFy\Plugins\Seo\Contracts\WpMetatag;
 use tiFy\Plugins\Seo\SeoResolverTrait;
-use tiFy\Route\Route;
 
 class Manager
 {
@@ -54,14 +54,12 @@ class Manager
                         array_push($this->metatags, $tag);
                     endif;
                 endforeach;
-
-                /** @var Route $router */
-                $router = app(Route::class);
+                
                 /** @var Ctags $ctags */
                 $ctags = app('wp.ctags');
 
                 $tags = [];
-                if (($c = $router->currentName()) || ($c = $ctags->current())) :
+                if (($c = router()->currentRouteName()) || ($c = $ctags->current())) :
                     reset($this->metatags);
                     foreach($this->metatags as $tag) :
                         $tags[$tag] = null;
