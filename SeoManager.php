@@ -1,12 +1,12 @@
 <?php
 
 /**
- * @name Seo
+ * @name \tiFy\Plugins\Seo\SeoManager
  * @desc Gestion des données de référencement.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstify-plugins/seo
  * @namespace \tiFy\Plugins\Seo
- * @version 2.0.10
+ * @version 2.0.11
  */
 
 namespace tiFy\Plugins\Seo;

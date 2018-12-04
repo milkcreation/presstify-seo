@@ -24,7 +24,7 @@ trait SeoResolverTrait
      *
      * @param string $path Chemin relatif de la ressource.
      *
-     * @return resource
+     * @return string
      */
     public function resourcesDir($path = '')
     {
@@ -39,7 +39,7 @@ trait SeoResolverTrait
      *
      * @param string $path Chemin relatif de la ressource.
      *
-     * @return resource
+     * @return string
      */
     public function resourcesUrl($path = '')
     {
