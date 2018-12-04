@@ -1,0 +1,57 @@
+.Seo-pmtagPreview {
+}
+
+.Seo-pmtagPreviewTitle {
+    color: #1a0dab;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.2;
+    text-align: left;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 515px;
+    margin: 0;
+    height: 1.2em;
+}
+
+.Seo-pmtagPreviewUrl {
+    margin-bottom: 5px;
+}
+
+.Seo-pmtagPreviewUrl cite {
+    color: #006621;
+    cursor: pointer;
+    display: inline;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.2;
+    padding-top: 1px;
+    text-align: left;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 410px;
+    height: 1.2em;
+
+}
+
+.Seo-pmtagPreviewDesc {
+    color: #545454;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+    overflow-wrap: break-word;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    width: 600px;
+    height: 2.8em;
+}
