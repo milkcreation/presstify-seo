@@ -77,6 +77,9 @@ class Manager
                                 $metatag->add($value, $c);
                                 $tags[$tag] = $metatag->get($c);
                                 break;
+                            // Récupération des valeurs du contexte global défini.
+                            elseif  ($tags[$tag] = $metatag->get('*')) :
+                                break;
                             endif;
 
                             // Récupération des valeurs de contexte Wordpress.
@@ -84,11 +87,6 @@ class Manager
                                 /** @var WpMetatag $wpMetatag */
                                 $wpMetatag = app("seo.wp.metatag.{$tag}");
                                 $tags[$tag] = $wpMetatag->get();
-                                break;
-                            endif;
-
-                            // Récupération des valeurs du contexte global défini.
-                            if  ($tags[$tag] = $metatag->get('*')) :
                                 break;
                             endif;
 

@@ -3,13 +3,13 @@
 namespace tiFy\Plugins\Seo\Wp;
 
 use tiFy\Contracts\Metabox\MetaboxManager;
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Kernel\Params\ParamsBagTrait;
 use tiFy\Plugins\Seo\Metabox\PostMetatag\PostMetatag;
 use tiFy\Plugins\Seo\SeoResolverTrait;
 
-class Manager extends ParamsBag
+class Manager
 {
-    use SeoResolverTrait;
+    use ParamsBagTrait, SeoResolverTrait;
 
     /**
      * CONSTRUCTEUR.
@@ -44,7 +44,7 @@ class Manager extends ParamsBag
                 );
 
                 foreach ($post_types as $post_type) :
-                    /** @var WP_Post_Type $wp_post_type */
+                    /** @var \WP_Post_Type $wp_post_type */
                     if (!$wp_post_type = get_post_type_object($post_type)) :
                         continue;
                     elseif (!$wp_post_type->public) :

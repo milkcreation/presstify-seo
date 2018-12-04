@@ -2,8 +2,6 @@
 
 namespace tiFy\Plugins\Seo\Metatag;
 
-use Illuminate\Support\Arr;
-
 class Title extends AbstractMetatag
 {
     /**
