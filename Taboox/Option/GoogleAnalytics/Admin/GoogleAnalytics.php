@@ -1,5 +1,5 @@
 <?php
-namespace tiFy\Plugins\Seo\Taboox\Options\GoogleAnalytics\Admin;
+namespace tiFy\Plugins\Seo\Taboox\Option\GoogleAnalytics\Admin;
 
 use tiFy\Core\Taboox\Admin;
 

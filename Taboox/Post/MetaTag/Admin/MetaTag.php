@@ -1,5 +1,5 @@
 <?php
-namespace tiFy\Plugins\Seo\Taboox\PostType\MetaTag\Admin;
+namespace tiFy\Plugins\Seo\Taboox\Post\MetaTag\Admin;
 
 use tiFy\Core\Taboox\Admin;
 

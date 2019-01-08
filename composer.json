@@ -10,7 +10,7 @@
     "google"
   ],
   "homepage": "http://svn.milkcreation.fr/presstify-plugins/seo",
-  "time": "2018-03-29",
+  "time": "2019-01-08",
   "license": "proprietary",
   "authors": [
     {
@@ -27,7 +27,7 @@
   ],
   "require": {
     "composer/installers": "~1.0",
-    "presstify/framework": "^1.4"
+    "presstify/framework": "1.2.*"
   },
   "autoload": {
     "psr-4": {
