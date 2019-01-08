@@ -1,5 +1,5 @@
 <?php
-namespace tiFy\Plugins\Seo\Taboox\Options\OpenGraph\Admin;
+namespace tiFy\Plugins\Seo\Taboox\Option\OpenGraph\Admin;
 
 use tiFy\Core\Taboox\Admin;
 
