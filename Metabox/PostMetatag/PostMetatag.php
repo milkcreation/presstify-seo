@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use tiFy\Metabox\MetaboxWpPostController;
 use tiFy\Plugins\Seo\SeoResolverTrait;
-use tiFy\Wp\Query\Post;
+use tiFy\Wp\Query\QueryPost;
 
 class PostMetatag extends MetaboxWpPostController
 {
@@ -17,8 +17,8 @@ class PostMetatag extends MetaboxWpPostController
      */
     public function content($post = null, $args = null, $null = null)
     {
-        /** @var Post $queryPost */
-        $queryPost = app('wp.query.post', [$post]);
+        /** @var QueryPost $queryPost */
+        $queryPost = app()->get('wp.query.post', [$post]);
 
         $datas = array_merge(
             [
@@ -26,7 +26,7 @@ class PostMetatag extends MetaboxWpPostController
                 'orig_url'   => $queryPost->getPermalink(),
                 'orig_desc'  => Str::limit($queryPost->getExcerpt(true), 155, '')
             ],
-            Arr::wrap(get_post_meta($post->ID, '_seo_metatag', true))
+            Arr::wrap(get_post_meta($queryPost->getId(), '_seo_metatag', true))
         );
 
         return $this->viewer('admin/post/metatag', $datas);

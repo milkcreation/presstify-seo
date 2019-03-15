@@ -2,7 +2,7 @@
 
 namespace tiFy\Plugins\Seo\Contracts;
 
-interface Seo extends SeoResolver
+interface SeoManager extends SeoResolver
 {
     /**
      * Ajout d'une métaboxe de réglage des options de référencement.
@@ -10,7 +10,7 @@ interface Seo extends SeoResolver
      * @param string $name Nom de qualification.
      * @param array $attrs Liste des attributs de configuration de la métabox.
      *
-     * @return $this
+     * @return static
      */
     public function addOptionsMetabox($name, $attrs = []);
 }

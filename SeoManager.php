@@ -1,20 +1,43 @@
 <?php
 
-/**
- * @name \tiFy\Plugins\Seo\SeoManager
- * @desc Gestion des données de référencement.
- * @author Jordy Manner <jordy@milkcreation.fr>
- * @package presstify-plugins/seo
- * @namespace \tiFy\Plugins\Seo
- * @version 2.0.11
- */
-
 namespace tiFy\Plugins\Seo;
 
 use tiFy\Contracts\Metabox\MetaboxManager;
-use tiFy\Plugins\Seo\SeoResolverTrait;
+use tiFy\Plugins\Seo\Contracts\SeoManager as SeoManagerContract;
 
-final class SeoManager
+/**
+ * Class SeoManager
+ *
+ * @desc Extension PresstiFy de gestion des données de référencement.
+ * @author Jordy Manner <jordy@milkcreation.fr>
+ * @package tiFy\Plugins\Seo
+ * @version 2.0.12
+ *
+ * USAGE :
+ * Activation
+ * ---------------------------------------------------------------------------------------------------------------------
+ * Dans config/app.php ajouter \tiFy\Plugins\Seo\SeoServiceProvider à la liste des fournisseurs de services.
+ * ex.
+ * <?php
+ * ...
+ * use tiFy\Plugins\Seo\SeoServiceProvider;
+ * ...
+ *
+ * return [
+ *      ...
+ *      'providers' => [
+ *          ...
+ *          SeoServiceProvider::class
+ *          ...
+ *      ]
+ * ];
+ *
+ * Configuration
+ * ---------------------------------------------------------------------------------------------------------------------
+ * Dans le dossier de config, créer le fichier seo.php
+ * @see /vendor/presstify-plugins/seo/Resources/config/seo.php
+ */
+final class SeoManager implements SeoManagerContract
 {
     use SeoResolverTrait;
 
@@ -31,32 +54,29 @@ final class SeoManager
      */
     public function __construct()
     {
-        add_action('init',
-            function () {
-                if ($this->optionsMetabox) :
-                    /** @var MetaboxManager $metabox */
-                    $metabox = resolve('metabox');
+        add_action('init', function () {
+            if ($this->optionsMetabox) :
+                /** @var MetaboxManager $metabox */
+                $metabox = resolve('metabox');
 
-                    foreach($this->optionsMetabox as $name => $attrs) :
-                        $metabox->add(
-                            $name,
-                            'tify_options@options',
-                            $attrs
-                        );
-                    endforeach;
+                foreach($this->optionsMetabox as $name => $attrs) :
+                    $metabox->add(
+                        $name,
+                        'tify_options@options',
+                        $attrs
+                    );
+                endforeach;
 
-                    $metabox
-                        ->add(
-                            'SeoOptions',
-                            'tify_options@options',
-                            [
-                                'title' => __('Référencement', 'tify'),
-                            ]
-                        );
-                endif;
-            },
-            999999
-        );
+                $metabox
+                    ->add(
+                        'SeoOptions',
+                        'tify_options@options',
+                        [
+                            'title' => __('Référencement', 'tify'),
+                        ]
+                    );
+            endif;
+        }, 999999);
     }
 
     /**
@@ -69,12 +89,7 @@ final class SeoManager
      */
     public function addOptionsMetabox($name, $attrs = [])
     {
-        $this->optionsMetabox[$name] = array_merge(
-            $attrs,
-            [
-                'parent' => 'SeoOptions'
-            ]
-        );
+        $this->optionsMetabox[$name] = array_merge($attrs, ['parent' => 'SeoOptions']);
 
         return $this;
     }
