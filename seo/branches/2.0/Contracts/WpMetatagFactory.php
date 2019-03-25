@@ -2,7 +2,7 @@
 
 namespace tiFy\Plugins\Seo\Contracts;
 
-interface WpMetatag
+interface WpMetatagFactory
 {
     /**
      * Récupération de la valeur par défaut de l'élément.
@@ -13,8 +13,6 @@ interface WpMetatag
 
     /**
      * Récupération de l'élément.
-     *
-     * @param string $title Intitulé courant.
      *
      * @return string|void
      */

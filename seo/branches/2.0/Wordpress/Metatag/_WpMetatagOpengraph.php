@@ -1,8 +1,14 @@
 <?php
 
-namespace tiFy\Plugins\Seo\Wp;
+namespace tiFy\Plugins\Seo\Wordpress\Metatag;
 
-class MetatagsOpengraph
+/**
+ * Class WpMetatagOpengraph
+ * @package tiFy\Plugins\Seo\Wordpress
+ *
+ * @todo Non fonctionnel
+ */
+class WpMetatagOpengraph
 {
     final public function wp_head_opengraph($output)
     {

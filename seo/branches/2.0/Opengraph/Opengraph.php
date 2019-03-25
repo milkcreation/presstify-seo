@@ -2,53 +2,52 @@
 
 namespace tiFy\Plugins\Seo\Opengraph;
 
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
+use tiFy\Plugins\Seo\Contracts\SeoManager;
 use tiFy\Plugins\Seo\Metabox\OptionsOpengraph\OptionsOpengraph;
-use tiFy\Plugins\Seo\SeoResolverTrait;
 
 class Opengraph extends ParamsBag
 {
-    use SeoResolverTrait;
-
     /**
-     * Liste des attributs de configuration.
-     * @var array
+     * Instance du gestionnaire de référencement.
+     * @var SeoManager
      */
-    protected $attributes = [
-        'admin'   => true
-    ];
+    protected $manager;
 
     /**
      * CONSTRUCTEUR.
      *
+     * @param SeoManager $manager Instance du gestionnaire de référencement.
+     *
      * @return void
      */
-    public function __construct()
+    public function __construct(SeoManager $manager)
     {
-        add_action(
-            'init',
-            function () {
-                $attrs = config('seo.opengraph', []);
-                $this->parse($attrs);
+        $this->manager = $manager;
 
-                if ($this->get('admin')) :
-                    app('seo')->addOptionsMetabox(
-                        'SeoOptionsOpengraph',
-                        [
-                            'parent'    => 'SeoOptions',
-                            'content'   => OptionsOpengraph::class
-                        ]
-                    );
-                endif;
-            },
-            999998
-        );
+        add_action('init', function () {
+            $this->set(config('seo.opengraph', []))->parse();
 
-        add_filter(
-            'language_attributes',
-            function ($output) {
-                return is_admin() ? $output : $output . ' xmlns:og="http://opengraphprotocol.org/schema/"';
-            }
-        );
+            if ($this->get('admin')) :
+                $this->manager->addOptionsMetabox('SeoOptionsOpengraph', [
+                    'parent'    => 'SeoOptions',
+                    'content'   => OptionsOpengraph::class
+                ]);
+            endif;
+        }, 999998);
+
+        add_filter('language_attributes', function ($output) {
+            return is_admin() ? $output : $output . ' xmlns:og="http://opengraphprotocol.org/schema/"';
+        });
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function defaults()
+    {
+        return [
+            'admin'   => true
+        ];
     }
 }

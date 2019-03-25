@@ -2,21 +2,21 @@
 
 namespace tiFy\Plugins\Seo\Metatag;
 
-use tiFy\Plugins\Seo\Contracts\Metatag;
+use tiFy\Plugins\Seo\Contracts\MetatagFactory as MetatagFactoryContract;
 
-abstract class AbstractMetatag implements Metatag
+class MetatagFactory implements MetatagFactoryContract
 {
-    /**
-     * Liste des éléments de clotûre déclarés par contexte.
-     * @var string[]
-     */
-    protected $ends = [];
-
     /**
      * Valeur du contenu de la balise.
      * @var string
      */
     protected $content = '';
+
+    /**
+     * Liste des éléments de clotûre déclarés par contexte.
+     * @var string[]
+     */
+    protected $ends = [];
 
     /**
      * Liste des éléments déclarés par contexte.
@@ -25,13 +25,31 @@ abstract class AbstractMetatag implements Metatag
     protected $items = [];
 
     /**
+     * Nom de qualification.
+     * @var string
+     */
+    protected $name = '';
+
+    /**
      * Caractère de séparation des éléments de contenu.
      * @var string
      */
     protected $sep = ', ';
 
     /**
-     * {@inheritdoc}
+     * CONSTRUCTEUR.
+     *
+     * @param string $name Nom de qualification.
+     *
+     * @return void
+     */
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function __toString()
     {
@@ -39,7 +57,7 @@ abstract class AbstractMetatag implements Metatag
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function add($value, $context = '*')
     {
@@ -53,7 +71,35 @@ abstract class AbstractMetatag implements Metatag
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     */
+    public function boot()
+    {
+
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function clear($context = '*')
+    {
+        if (isset($this->items[$context])) :
+            unset($this->items[$context]);
+        endif;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function content()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function end($value = '', $context = '*')
     {
@@ -67,19 +113,7 @@ abstract class AbstractMetatag implements Metatag
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function clear($context = '*')
-    {
-        if (isset($this->items[$context])) :
-            unset($this->items[$context]);
-        endif;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function get($context = '*')
     {
@@ -100,23 +134,15 @@ abstract class AbstractMetatag implements Metatag
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getName()
     {
-        return class_info($this)->getKebabName();
+        return $this->name;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function content()
-    {
-        return $this->content;
-    }
-
-    /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function set($content)
     {
@@ -130,21 +156,18 @@ abstract class AbstractMetatag implements Metatag
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function tag()
     {
-        return partial(
-            'tag',
-            [
-                'tag'     => 'meta',
-                'attrs'   => [
-                    'id'    => '',
-                    'class' => '',
-                    'name'  => $this->getName(),
-                    'content' => $this->content(),
-                ]
+        return partial('tag', [
+            'tag'     => 'meta',
+            'attrs'   => [
+                'id'    => '',
+                'class' => '',
+                'name'  => $this->getName(),
+                'content' => $this->content(),
             ]
-        );
+        ]);
     }
 }

@@ -2,70 +2,65 @@
 
 namespace tiFy\Plugins\Seo\GoogleAnalytics;
 
-use tiFy\Contracts\Metabox\MetaboxManager;
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
+use tiFy\Plugins\Seo\Contracts\GoogleAnalytics as GoogleAnalyticsContract;
+use tiFy\Plugins\Seo\Contracts\SeoManager;
 use tiFy\Plugins\Seo\Metabox\OptionsGoogleAnalytics\OptionsGoogleAnalytics;
-use tiFy\Plugins\Seo\SeoResolverTrait;
 
-class GoogleAnalytics extends ParamsBag
+class GoogleAnalytics extends ParamsBag implements GoogleAnalyticsContract
 {
-    use SeoResolverTrait;
-
     /**
-     * Liste des attributs de configuration.
-     * @var array
+     * Instance du gestionnaire de référencement.
+     * @var SeoManager
      */
-    protected $attributes = [
-        'admin'   => true,
-        'ua_code' => ''
-    ];
+    protected $manager;
 
     /**
      * CONSTRUCTEUR.
      *
+     * @param SeoManager $manager Instance du gestionnaire de référencement.
+     *
      * @return void
      */
-    public function __construct()
+    public function __construct(SeoManager $manager)
     {
-        add_action(
-            'wp_head',
-            function () {
-                if ($ua_code = $this->get('ua_code')) :
-                    echo $this->viewer('gtag', ['ua_code' => $ua_code])->render();
-                endif;
-            },
-            999999
-        );
+        $this->manager = $manager;
 
-        add_action(
-            'init',
-            function () {
-                $attrs = config('seo.google_analytics', []);
-                $this->parse($attrs);
+        add_action('init', function () {
+            $this->set(config('seo.google_analytics', []))->parse();
 
-                if ($this->get('admin')) :
-                    app('seo')->addOptionsMetabox(
-                        'SeoOptionsGoogleAnalytics',
-                        [
-                            'content'   => OptionsGoogleAnalytics::class
-                        ]
-                    );
-                endif;
-            },
-            999998
-        );
+            if ($this->get('admin')) {
+                $this->manager->addOptionsMetabox('SeoOptionsGoogleAnalytics', [
+                    'content' => OptionsGoogleAnalytics::class,
+                ]);
+            }
+        }, 999998);
+
+        add_action('wp_head', function () {
+            if ($ua_code = $this->get('ua_code')) {
+                echo $this->manager->viewer('gtag', ['ua_code' => $ua_code])->render();
+            }
+        }, 999999);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function parse($attrs = [])
+    public function defaults()
     {
-        parent::parse($attrs);
+        return [
+            'admin'   => true,
+            'ua_code' => '',
+        ];
+    }
 
-        $this->set(
-            'ua_code',
-            get_option('seo_ua_code') ? : config('seo.google_analytics.ua_code', '')
-        );
+    /**
+     * @inheritdoc
+     */
+    public function parse()
+    {
+        parent::parse();
+
+        $this->set('ua_code', get_option('seo_ua_code') ?: config('seo.google_analytics.ua_code', ''));
     }
 }

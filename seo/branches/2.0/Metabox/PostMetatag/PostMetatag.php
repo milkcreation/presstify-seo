@@ -5,15 +5,12 @@ namespace tiFy\Plugins\Seo\Metabox\PostMetatag;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use tiFy\Metabox\MetaboxWpPostController;
-use tiFy\Plugins\Seo\SeoResolverTrait;
-use tiFy\Wp\Query\QueryPost;
+use tiFy\Wordpress\Query\QueryPost;
 
 class PostMetatag extends MetaboxWpPostController
 {
-    use SeoResolverTrait;
-
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function content($post = null, $args = null, $null = null)
     {
@@ -29,11 +26,11 @@ class PostMetatag extends MetaboxWpPostController
             Arr::wrap(get_post_meta($queryPost->getId(), '_seo_metatag', true))
         );
 
-        return $this->viewer('admin/post/metatag', $datas);
+        return seo()->viewer('admin/post/metatag', $datas);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function header($post = null, $args = null, $null = null)
     {
@@ -41,35 +38,32 @@ class PostMetatag extends MetaboxWpPostController
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function load($wp_screen)
     {
-        add_action(
-            'admin_enqueue_scripts',
-            function () {
-                field('text-remaining')->enqueue_scripts();
+        add_action('admin_enqueue_scripts', function () {
+            field('text-remaining')->enqueue_scripts();
 
-                wp_enqueue_style(
-                    'SeoMetatag',
-                    $this->resourcesUrl('/assets/css/admin-post-metatag.css'),
-                    [],
-                    181108
-                );
+            wp_enqueue_style(
+                'SeoMetatag',
+                seo()->resourcesUrl('/assets/css/admin-post-metatag.css'),
+                [],
+                181108
+            );
 
-                wp_enqueue_script(
-                    'SeoMetatag',
-                    $this->resourcesUrl('/assets/js/admin-post-metatag.js'),
-                    ['jquery'],
-                    181108,
-                    true
-                );
-            }
-        );
+            wp_enqueue_script(
+                'SeoMetatag',
+                seo()->resourcesUrl('/assets/js/admin-post-metatag.js'),
+                ['jquery'],
+                181108,
+                true
+            );
+        });
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function metadatas()
     {

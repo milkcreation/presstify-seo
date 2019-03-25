@@ -3,33 +3,24 @@
 namespace tiFy\Plugins\Seo\Metabox\OptionsOpengraph;
 
 use tiFy\Metabox\MetaboxWpOptionsController;
-use tiFy\Plugins\Seo\SeoResolverTrait;
 
 class OptionsOpengraph extends MetaboxWpOptionsController
 {
-    use SeoResolverTrait;
-
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function content($args = null, $null1 = null, $null2 = null)
     {
-        $this->set(
-            'opengraph',
-            array_merge(
-                [
-                    'active' => 'off',
-                    'image' => 0
-                ],
-                get_option('seo_opengraph', [])
-            )
-        );
+        $this->set('opengraph', array_merge([
+            'active' => 'off',
+            'image' => 0
+        ], get_option('seo_opengraph', [])));
 
-        return $this->viewer('admin/options/opengraph', $this->all());
+        return seo()->viewer('admin/options/opengraph', $this->all());
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function header($args = null, $null1 = null, $null2 = null)
     {
@@ -37,21 +28,18 @@ class OptionsOpengraph extends MetaboxWpOptionsController
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function load($wp_screen)
     {
-        add_action(
-            'admin_enqueue_scripts',
-            function () {
-                field('toggle-switch')->enqueue_scripts();
-                field('media-image')->enqueue_scripts();
-            }
-        );
+        add_action('admin_enqueue_scripts', function () {
+            field('toggle-switch')->enqueue_scripts();
+            field('media-image')->enqueue_scripts();
+        });
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function settings()
     {

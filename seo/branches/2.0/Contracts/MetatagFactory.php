@@ -2,9 +2,9 @@
 
 namespace tiFy\Plugins\Seo\Contracts;
 
-use tiFy\Contracts\Partial\PartialController;
+use tiFy\Contracts\Partial\PartialFactory;
 
-interface Metatag
+interface MetatagFactory
 {
     /**
      * Résolution de sortie de la classe en tant que chaîne de caractère.
@@ -24,14 +24,11 @@ interface Metatag
     public function add($value, $context = '*');
 
     /**
-     * Définition de l'élément de clôture selon son contexte d'affichage.
+     * Initialisation du controleur.
      *
-     * @param string $value Valeur de l'élément.
-     * @param string $context Contexte associé. '*' par défaut.
-     *
-     * @return $this
+     * @return void
      */
-    public function end($value = '', $context = '*');
+    public function boot();
 
     /**
      * Suppression de la liste des éléments déclarés selon le contexte d'affichage.
@@ -41,6 +38,23 @@ interface Metatag
      * @return $this
      */
     public function clear($context = '*');
+
+    /**
+     * Récupération du contenu de la balise.
+     *
+     * @return string
+     */
+    public function content();
+
+    /**
+     * Définition de l'élément de clôture selon son contexte d'affichage.
+     *
+     * @param string $value Valeur de l'élément.
+     * @param string $context Contexte associé. '*' par défaut.
+     *
+     * @return $this
+     */
+    public function end($value = '', $context = '*');
 
     /**
      * Récupération de la liste des éléments déclarés selon le contexte d'affichage.
@@ -59,13 +73,6 @@ interface Metatag
     public function getName();
 
     /**
-     * Récupération du contenu de la balise.
-     *
-     * @return string
-     */
-    public function content();
-
-    /**
      * Définition du contenu de la balise.
      *
      * @param array|string $content
@@ -77,7 +84,7 @@ interface Metatag
     /**
      * Instance de balise représentative des élements.
      *
-     * @return PartialController
+     * @return PartialFactory
      */
     public function tag();
 }
