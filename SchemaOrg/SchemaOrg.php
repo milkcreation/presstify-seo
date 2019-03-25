@@ -2,8 +2,29 @@
 
 namespace tiFy\Plugins\Seo\SchemaOrg;
 
+use tiFy\Plugins\Seo\Contracts\SeoManager;
+
 class SchemaOrg
 {
+    /**
+     * Instance du gestionnaire de référencement.
+     * @var SeoManager
+     */
+    protected $manager;
+
+    /**
+     * CONSTRUCTEUR.
+     *
+     * @param SeoManager $manager Instance du gestionnaire de référencement.
+     *
+     * @return void
+     */
+    public function __construct(SeoManager $manager)
+    {
+        $this->manager = $manager;
+    }
+
+
     /**
      * Langage Attribute de la balise HTML pour Schema.org
      * @TODO

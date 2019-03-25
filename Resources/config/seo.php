@@ -22,7 +22,8 @@ return [
      *              Seo génére automatiquement les valeurs pour les balises de type title|description|robots.
      * - cas 2 :    ex. description
      *              Déclaration du nom de qualification de la balise en indice et tableau de contexte.
-     *              Les clés des contextes peuvent être des contextes Wordpress (home|front|...) @see \tiFy\Wp\WpCtags
+     *              Les clés des contextes peuvent être des contextes Wordpress (home|front|...)
+     *              @see \tiFy\Wordpress\WpCtags
      *              ou un nom de qualification d'une route déclarée.
      * - cas 3 :    ex. keywords
      *              Désactivation de la balise pour tous les contextes.

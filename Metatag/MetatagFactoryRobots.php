@@ -18,10 +18,10 @@ namespace tiFy\Plugins\Seo\Metatag;
  * unavailable_after: [date ]    Cette balise meta tag robot permet de préciser l’heure et la date exactes aux quelles l’exploration et l’indexation de la page en questions doivent cesser.
  * noimageindex     Cette balise meta tag robot permet d’indiquer que la page en question doit être indiquée comme source d’une image.
  */
-class Robots extends AbstractMetatag
+class MetatagFactoryRobots extends MetatagFactory
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function content()
     {

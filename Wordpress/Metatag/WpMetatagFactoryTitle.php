@@ -1,10 +1,10 @@
 <?php
 
-namespace tiFy\Plugins\Seo\Wp;
+namespace tiFy\Plugins\Seo\Wordpress\Metatag;
 
-use tiFy\Plugins\Seo\Contracts\WpMetatag;
+use WP_Term;
 
-class MetatagTitle extends AbstractMetatag implements WpMetatag
+class WpMetatagFactoryTitle extends WpMetatagFactory
 {
     /**
      * Séparateur des éléments du titre.
@@ -34,15 +34,15 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function get()
     {
-        return $this->defaults() . (($end = $this->end()) ? " {$this->sep} {$end}": '');
+        return $this->defaults() . (($end = $this->end()) ? " {$this->sep} {$end}" : '');
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function is404()
     {
@@ -50,7 +50,7 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isArchive()
     {
@@ -58,20 +58,20 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
             ? post_type_archive_title('', false)
             : __('Archives', 'tify');
 
-        if (is_paged()) :
+        if (is_paged()) {
             $title = sprintf(
                 __('Page %s sur %s - %s', 'tify'),
                 (get_query_var('paged') ? get_query_var('paged') : 1),
                 $this->query()->max_num_pages,
                 $title
             );
-        endif;
+        }
 
         return $title;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isAuthor()
     {
@@ -82,7 +82,7 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isAttachment()
     {
@@ -90,41 +90,34 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isCategory()
     {
-        /** @var \WP_Term $term */
-        return  (($term = get_category(get_query_var('cat'))) && (!$term instanceof \WP_Error))
+        /** @var WP_Term $term */
+        return (($term = get_category(get_query_var('cat'))) && (!$term instanceof \WP_Error))
             ? sprintf(__('Catégorie : %s', 'tify'), $term->name)
             : __('Catégorie non définie', 'tify');
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isDate()
     {
-        if (is_day()) :
-            return sprintf(
-                __('Archive quotidienne : %s', 'tify'),
-                get_the_date()
-            );
-        elseif (is_month()) :
-            return sprintf(
-                __('Archive mensuelle : %s', 'tify'),
-                get_the_date('F Y')
-            );
-        elseif (is_year()) :
-            return sprintf(
-                __('Archive annuelle : %s', 'tify'),
-                get_the_date('Y')
-            );
-        endif;
+        if (is_day()) {
+            return sprintf(__('Archive quotidienne : %s', 'tify'), get_the_date());
+        } elseif (is_month()) {
+            return sprintf(__('Archive mensuelle : %s', 'tify'), get_the_date('F Y'));
+        } elseif (is_year()) {
+            return sprintf(__('Archive annuelle : %s', 'tify'), get_the_date('Y'));
+        }
+
+        return '';
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isFrontPage()
     {
@@ -132,20 +125,20 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
             ? get_the_title($page_on_front)
             : __('Accueil', 'tify');
 
-        if (is_paged()) :
+        if (is_paged()) {
             $title .= sprintf(
                 __(' %1$s page %2$s sur %3$s', 'tify'),
                 $this->sep,
                 (get_query_var('paged') ? get_query_var('paged') : 1),
                 $this->query()->max_num_pages
             );
-        endif;
+        }
 
         return $title;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isHome()
     {
@@ -153,20 +146,20 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
             ? get_the_title($page_for_posts)
             : __('Actualités', 'tify');
 
-        if (is_paged()) :
+        if (is_paged()) {
             $title .= sprintf(
                 __(' %1$s page %2$s sur %3$s', 'tify'),
                 $this->sep,
                 (get_query_var('paged') ? get_query_var('paged') : 1),
                 $this->query()->max_num_pages
             );
-        endif;
+        }
 
         return $title;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isPage()
     {
@@ -174,45 +167,45 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isPostTypeArchive()
     {
         $title = post_type_archive_title('', false);
 
-        if (is_paged()) :
+        if (is_paged()) {
             $title = sprintf(
                 __('Page %s sur %s - %s', 'tify'),
                 (get_query_var('paged') ? get_query_var('paged') : 1),
                 $this->query()->max_num_pages,
                 $title
             );
-        endif;
+        }
 
         return $title;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isSearch()
     {
         $title = sprintf('%1$s %2$s', __('Recherche de', 'tify'), get_search_query());
 
-        if (is_paged()) :
+        if (is_paged()) {
             $title = sprintf(
                 __('Page %s sur %s - %s', 'tify'),
                 (get_query_var('paged') ? get_query_var('paged') : 1),
                 $this->query()->max_num_pages,
                 $title
             );
-        endif;
+        }
 
         return $title;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isSingle()
     {
@@ -220,7 +213,7 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isSingular()
     {
@@ -228,22 +221,22 @@ class MetatagTitle extends AbstractMetatag implements WpMetatag
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isTag()
     {
-        /** @var \WP_Term $term */
-        return  (($term = get_tag(get_query_var('tag'))) && (!$term instanceof \WP_Error))
+        /** @var WP_Term $term */
+        return (($term = get_tag(get_query_var('tag'))) && (!$term instanceof \WP_Error))
             ? sprintf('Etiquette : %s', $term->name)
             : __('Etiquette non définie', 'tify');
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function isTax()
     {
-        /** @var \WP_Term $term*/
+        /** @var WP_Term $term */
         $term = get_queried_object();
 
         return sprintf(

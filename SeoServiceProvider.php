@@ -4,59 +4,104 @@ namespace tiFy\Plugins\Seo;
 
 use tiFy\App\Container\AppServiceProvider;
 use tiFy\Plugins\Seo\GoogleAnalytics\GoogleAnalytics;
-use tiFy\Plugins\Seo\Metatag\Description as MetatagDescription;
-use tiFy\Plugins\Seo\Metatag\Manager as MetatagManager;
-use tiFy\Plugins\Seo\Metatag\MetatagItemController;
-use tiFy\Plugins\Seo\Metatag\Robots as MetatagRobots;
-use tiFy\Plugins\Seo\Metatag\Title as MetatagTitle;
+use tiFy\Plugins\Seo\Metatag\MetatagFactory;
+use tiFy\Plugins\Seo\Metatag\MetatagFactoryDescription;
+use tiFy\Plugins\Seo\Metatag\MetatagFactoryRobots;
+use tiFy\Plugins\Seo\Metatag\MetatagFactoryTitle;
+use tiFy\Plugins\Seo\Metatag\MetatagManager;
 use tiFy\Plugins\Seo\Opengraph\Opengraph;
-use tiFy\Plugins\Seo\Wp\Manager as WpManager;
-use tiFy\Plugins\Seo\Wp\MetatagDescription as WpMetatagDescription;
-use tiFy\Plugins\Seo\Wp\MetatagTitle as WpMetatagTitle;
+use tiFy\Plugins\Seo\Wordpress\WpManager;
+use tiFy\Plugins\Seo\Wordpress\Metatag\WpMetatagFactoryDescription;
+use tiFy\Plugins\Seo\Wordpress\Metatag\WpMetatagFactoryTitle;
 
 class SeoServiceProvider extends AppServiceProvider
 {
     /**
-     * {@inheritdoc}
+     * Liste des noms de qualification des services fournis.
+     * @internal requis. Tous les noms de qualification de services à traiter doivent être renseignés.
+     * @var string[]
+     */
+    protected $provides = [
+        'seo',
+        'seo.google-analytics',
+        'seo.metatag',
+        'seo.metatag.factory',
+        'seo.metatag.factory.description',
+        'seo.metatag.factory.robots',
+        'seo.metatag.factory.title',
+        'seo.opengraph',
+        'seo.viewer',
+        'seo.wp',
+        'seo.wp.metatag.description',
+        'seo.wp.metatag.title'
+    ];
+
+    /**
+     * @inheritdoc
      */
     public function boot()
     {
-        $this->app->singleton('seo', function () {
-            return new SeoManager();
-        })->build();
-
-        $this->app->singleton('seo.google.analytics', function () {
-            return new GoogleAnalytics();
-        })->build();
-
-        $this->app->singleton('seo.metatag.description', function () {
-            return new MetatagDescription();
-        })->build();
-        $this->app->singleton('seo.metatag.manager', function () {
-            return new MetatagManager();
-        })->build();
-        $this->app->bind('seo.metatag.item.controller', function ($name) {
-            return new MetatagItemController($name);
+        add_action('after_setup_theme', function () {
+            $this->getContainer()->get('seo');
+            $this->getContainer()->get('seo.wp');
         });
-        $this->app->singleton('seo.metatag.robots', function () {
-            return new MetatagRobots();
-        })->build();
-        $this->app->singleton('seo.metatag.title', function () {
-            return new MetatagTitle();
-        })->build();
+    }
 
-        $this->app->singleton('seo.opengraph', function () {
-            return new Opengraph();
-        })->build();
+    /**
+     * @inheritdoc
+     */
+    public function register()
+    {
+        $this->getContainer()->share('seo', function () {
+            return new SeoManager();
+        });
 
-        $this->app->singleton('seo.wp.manager', function () {
-            return new WpManager();
-        })->build();
-        $this->app->singleton('seo.wp.metatag.description', function () {
-            return new WpMetatagDescription();
-        })->build();
-        $this->app->singleton('seo.wp.metatag.title', function () {
-            return new WpMetatagTitle();
-        })->build();
+        $this->getContainer()->share('seo.google-analytics', function () {
+            return new GoogleAnalytics($this->getContainer()->get('seo'));
+        });
+
+        $this->getContainer()->share('seo.metatag', function () {
+            return new MetatagManager($this->getContainer()->get('seo'));
+        });
+
+        $this->getContainer()->add('seo.metatag.factory', function ($name) {
+            return new MetatagFactory($name);
+        });
+
+        $this->getContainer()->share('seo.metatag.factory.description', function () {
+            return new MetatagFactoryDescription('description');
+        });
+
+        $this->getContainer()->share('seo.metatag.factory.robots', function () {
+            return new MetatagFactoryRobots('robots');
+        });
+
+        $this->getContainer()->share('seo.metatag.factory.title', function () {
+            return new MetatagFactoryTitle('title');
+        });
+
+        $this->getContainer()->share('seo.opengraph', function () {
+            return new Opengraph($this->getContainer()->get('seo'));
+        });
+
+        $this->getContainer()->share('seo.wp', function () {
+            return new WpManager($this->getContainer()->get('seo'));
+        });
+
+        $this->getContainer()->share('seo.wp.metatag.description', function () {
+            return new WpMetatagFactoryDescription();
+        });
+
+        $this->getContainer()->share('seo.wp.metatag.title', function () {
+            return new WpMetatagFactoryTitle();
+        });
+
+        $this->getContainer()->share('seo.viewer', function () {
+            $default_dir = $this->getContainer()->get('seo')->resourcesDir('/views');
+
+            return view()
+                ->setDirectory(is_dir($default_dir) ? $default_dir : null)
+                ->setOverrideDir($default_dir);
+        });
     }
 }

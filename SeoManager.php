@@ -3,6 +3,8 @@
 namespace tiFy\Plugins\Seo;
 
 use tiFy\Contracts\Metabox\MetaboxManager;
+use tiFy\Contracts\View\ViewEngine;
+use tiFy\Plugins\Seo\Contracts\MetatagManager;
 use tiFy\Plugins\Seo\Contracts\SeoManager as SeoManagerContract;
 
 /**
@@ -11,7 +13,7 @@ use tiFy\Plugins\Seo\Contracts\SeoManager as SeoManagerContract;
  * @desc Extension PresstiFy de gestion des données de référencement.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy\Plugins\Seo
- * @version 2.0.12
+ * @version 2.0.13
  *
  * USAGE :
  * Activation
@@ -39,8 +41,6 @@ use tiFy\Plugins\Seo\Contracts\SeoManager as SeoManagerContract;
  */
 final class SeoManager implements SeoManagerContract
 {
-    use SeoResolverTrait;
-
     /**
      * Liste des metaboxes de réglages des options.
      * @var array
@@ -57,40 +57,109 @@ final class SeoManager implements SeoManagerContract
         add_action('init', function () {
             if ($this->optionsMetabox) :
                 /** @var MetaboxManager $metabox */
-                $metabox = resolve('metabox');
+                $metabox = app('metabox');
 
                 foreach($this->optionsMetabox as $name => $attrs) :
-                    $metabox->add(
-                        $name,
-                        'tify_options@options',
-                        $attrs
-                    );
+                    $metabox->add($name, 'tify_options@options', $attrs);
                 endforeach;
 
-                $metabox
-                    ->add(
-                        'SeoOptions',
-                        'tify_options@options',
-                        [
-                            'title' => __('Référencement', 'tify'),
-                        ]
-                    );
+                $metabox->add('SeoOptions', 'tify_options@options', [
+                    'title' => __('Référencement', 'tify'),
+                ]);
             endif;
         }, 999999);
     }
 
     /**
-     * Ajout d'une métaboxe de réglage des options de référencement.
+     * Résolution de service fournis par l'extension.
      *
-     * @param string $name Nom de qualification.
-     * @param array $attrs Liste des attributs de configuration de la métabox.
+     * @param string $alias Nom de qualification du service.
+     * @param array ...$args Liste des variables passées en argument au service.
      *
-     * @return $this
+     * @return mixed
+     */
+    private function _resolve($alias, ...$args)
+    {
+        return app()->make("seo.$alias", $args);
+    }
+
+    /**
+     * @inheritdoc
      */
     public function addOptionsMetabox($name, $attrs = [])
     {
         $this->optionsMetabox[$name] = array_merge($attrs, ['parent' => 'SeoOptions']);
 
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function google_analytics()
+    {
+        return $this->_resolve('google-analytics');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function metatag($tag = null, $value = null, $context = '*')
+    {
+        /** @var MetatagManager $metatag */
+        $manager = $this->_resolve('metatag');
+
+        if (is_null($tag)) :
+            return $manager;
+        elseif(is_null($value)) :
+            return $manager->make($tag);
+        endif;
+
+        return $manager->add($tag, $value, $context);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function wordpress()
+    {
+        return $this->_resolve('wp');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function resourcesDir($path = '')
+    {
+        $cinfo = class_info($this);
+        $path = '/Resources/' . ltrim($path, '/');
+
+        return file_exists($cinfo->getDirname() . $path) ? $cinfo->getDirname() . $path : '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function resourcesUrl($path = '')
+    {
+        $cinfo = class_info($this);
+        $path = '/Resources/' . ltrim($path, '/');
+
+        return file_exists($cinfo->getDirname() . $path) ? $cinfo->getUrl() . $path : '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function viewer($view = null, $data = [])
+    {
+        /** @var ViewEngine $viewer */
+        $viewer = $this->_resolve('viewer');
+
+        if (func_num_args() === 0) :
+            return $viewer;
+        endif;
+
+        return $viewer->make("_override::{$view}", $data);
     }
 }
