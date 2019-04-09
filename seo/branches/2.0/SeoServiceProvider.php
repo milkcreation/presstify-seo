@@ -53,7 +53,7 @@ class SeoServiceProvider extends AppServiceProvider
     public function register()
     {
         $this->getContainer()->share('seo', function () {
-            return new SeoManager();
+            return new SeoManager($this->getContainer());
         });
 
         $this->getContainer()->share('seo.google-analytics', function () {

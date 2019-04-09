@@ -2,6 +2,7 @@
 
 namespace tiFy\Plugins\Seo;
 
+use Psr\Container\ContainerInterface;
 use tiFy\Contracts\Metabox\MetaboxManager;
 use tiFy\Contracts\View\ViewEngine;
 use tiFy\Plugins\Seo\Contracts\MetatagManager;
@@ -13,7 +14,7 @@ use tiFy\Plugins\Seo\Contracts\SeoManager as SeoManagerContract;
  * @desc Extension PresstiFy de gestion des données de référencement.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy\Plugins\Seo
- * @version 2.0.13
+ * @version 2.0.14
  *
  * USAGE :
  * Activation
@@ -42,6 +43,12 @@ use tiFy\Plugins\Seo\Contracts\SeoManager as SeoManagerContract;
 final class SeoManager implements SeoManagerContract
 {
     /**
+     * Instance du conteneur d'injection de dépendances.
+     * @var
+     */
+    protected $container;
+
+    /**
      * Liste des metaboxes de réglages des options.
      * @var array
      */
@@ -52,8 +59,10 @@ final class SeoManager implements SeoManagerContract
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ContainerInterface $container)
     {
+        $this->container = $container;
+
         add_action('init', function () {
             if ($this->optionsMetabox) :
                 /** @var MetaboxManager $metabox */
@@ -80,7 +89,7 @@ final class SeoManager implements SeoManagerContract
      */
     private function _resolve($alias, ...$args)
     {
-        return app()->make("seo.$alias", $args);
+        return $this->container->get("seo.$alias", $args);
     }
 
     /**
