@@ -2,7 +2,7 @@
 
 namespace tiFy\Plugins\Seo;
 
-use tiFy\App\Container\AppServiceProvider;
+use tiFy\Container\ServiceProvider;
 use tiFy\Plugins\Seo\GoogleAnalytics\GoogleAnalytics;
 use tiFy\Plugins\Seo\Metatag\MetatagFactory;
 use tiFy\Plugins\Seo\Metatag\MetatagFactoryDescription;
@@ -14,7 +14,7 @@ use tiFy\Plugins\Seo\Wordpress\WpManager;
 use tiFy\Plugins\Seo\Wordpress\Metatag\WpMetatagFactoryDescription;
 use tiFy\Plugins\Seo\Wordpress\Metatag\WpMetatagFactoryTitle;
 
-class SeoServiceProvider extends AppServiceProvider
+class SeoServiceProvider extends ServiceProvider
 {
     /**
      * Liste des noms de qualification des services fournis.

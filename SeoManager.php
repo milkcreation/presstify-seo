@@ -14,7 +14,7 @@ use tiFy\Plugins\Seo\Contracts\SeoManager as SeoManagerContract;
  * @desc Extension PresstiFy de gestion des données de référencement.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy\Plugins\Seo
- * @version 2.0.14
+ * @version 2.0.15
  *
  * USAGE :
  * Activation
