@@ -43,7 +43,7 @@ class PostMetatag extends MetaboxWpPostController
     public function load($wp_screen)
     {
         add_action('admin_enqueue_scripts', function () {
-            field('text-remaining')->enqueue_scripts();
+            field('text-remaining')->enqueue();
 
             wp_enqueue_style(
                 'SeoMetatag',

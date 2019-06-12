@@ -33,8 +33,8 @@ class OptionsOpengraph extends MetaboxWpOptionsController
     public function load($wp_screen)
     {
         add_action('admin_enqueue_scripts', function () {
-            field('toggle-switch')->enqueue_scripts();
-            field('media-image')->enqueue_scripts();
+            field('toggle-switch')->enqueue();
+            field('media-image')->enqueue();
         });
     }
 
