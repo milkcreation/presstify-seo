@@ -3,12 +3,14 @@
 Plugin Name: SEO
 Plugin URI: https://presstify.com/plugins/seo
 Description: Gestionnaire de référencement de site
-Version: 1.0.2
+Version: 1.0.3
 Author: Milkcreation
 Author URI: http://milkcreation.fr
 */
 
 namespace tiFy\Plugins\Seo;
+
+use WP_Post;
 
 class Seo extends \tiFy\App\Plugin
 {
@@ -44,6 +46,12 @@ class Seo extends \tiFy\App\Plugin
         add_filter('tify_seo_desc_is_page_on_front', [$this, 'tify_seo_desc_for_singular'], 0, 3);
         add_filter('tify_seo_desc_is_single', [$this, 'tify_seo_desc_for_singular'], 0, 3);
         add_filter('tify_seo_desc_is_page', [$this, 'tify_seo_desc_for_singular'], 0, 3);
+        add_filter('get_canonical_url', function (string $canonical_url, WP_Post $post) {
+            if($meta = get_post_meta($post->ID, '_tify_seo_meta', true)) {
+                $canonical_url = !empty($meta['url']) ? $meta['url'] :  $canonical_url ;
+            }
+            return $canonical_url;
+        }, 10, 2);
     }
 
     /* = DECLENCHEURS = */
