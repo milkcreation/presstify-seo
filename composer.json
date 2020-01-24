@@ -10,7 +10,7 @@
     "google"
   ],
   "homepage": "http://svn.milkcreation.fr/presstify-plugins/seo",
-  "time": "2018-03-29",
+  "time": "2020-01-24",
   "license": "proprietary",
   "authors": [
     {
@@ -22,7 +22,7 @@
   "repositories": [
     {
       "type": "composer",
-      "url": "http://composer.tigreblanc.fr/presstify/"
+      "url": "https://composer.tigreblanc.fr/presstify"
     }
   ],
   "require": {
